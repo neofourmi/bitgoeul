@@ -512,179 +512,85 @@
 
   /* ===== PASSWORD ===== */
   #pw-overlay {
-    position: fixed; inset: 0;
-    background: #0d0d14;
-    display: flex; align-items: center; justify-content: center;
-    z-index: 9999;
-    flex-direction: column;
-    gap: 20px;
+    position:fixed;inset:0;background:#0d0d14;
+    display:flex;align-items:center;justify-content:center;
+    z-index:9999;flex-direction:column;
   }
-  #pw-overlay.hidden { display: none; }
-  .pw-box {
-    background: #16161f;
-    border: 1px solid #2a2a3a;
-    border-radius: 16px;
-    padding: 40px 32px;
-    text-align: center;
-    width: 320px;
+  #pw-overlay.hidden{display:none;}
+  .pw-box{
+    background:#16161f;border:1px solid #2a2a3a;
+    border-radius:16px;padding:40px 32px;text-align:center;width:320px;
   }
-  .pw-logo {
-    font-family: 'Noto Serif KR', serif;
-    font-size: 22px;
-    font-weight: 700;
-    color: #c8a96e;
-    margin-bottom: 8px;
+  .pw-logo{
+    font-family:'Noto Serif KR',serif;font-size:22px;
+    font-weight:700;color:#c8a96e;margin-bottom:8px;
   }
-  .pw-sub { font-size: 12px; color: #9090a8; margin-bottom: 28px; }
-  .pw-input {
-    width: 100%;
-    background: #0d0d14;
-    border: 1px solid #2a2a3a;
-    border-radius: 10px;
-    padding: 14px 16px;
-    color: #e8e8f0;
-    font-size: 18px;
-    font-family: 'Noto Sans KR', sans-serif;
-    text-align: center;
-    letter-spacing: 6px;
-    margin-bottom: 12px;
-    outline: none;
+  .pw-sub{font-size:12px;color:#9090a8;margin-bottom:28px;}
+  .pw-input{
+    width:100%;background:#0d0d14;border:1px solid #2a2a3a;
+    border-radius:10px;padding:14px 16px;color:#e8e8f0;
+    font-size:18px;font-family:'Noto Sans KR',sans-serif;
+    text-align:center;letter-spacing:6px;margin-bottom:12px;outline:none;
   }
-  .pw-input:focus { border-color: #c8a96e; }
-  .pw-btn {
-    width: 100%;
-    background: #c8a96e;
-    color: #0d0d14;
-    border: none;
-    border-radius: 10px;
-    padding: 14px;
-    font-size: 15px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: background 0.2s;
+  .pw-input:focus{border-color:#c8a96e;}
+  .pw-btn{
+    width:100%;background:#c8a96e;color:#0d0d14;border:none;
+    border-radius:10px;padding:14px;font-size:15px;font-weight:700;
+    cursor:pointer;font-family:'Noto Sans KR',sans-serif;
   }
-  .pw-btn:hover { background: #d4b87e; }
-  .pw-error {
-    font-size: 12px;
-    color: #ef4444;
-    margin-top: 8px;
-    min-height: 18px;
-  }
+  .pw-btn:hover{background:#d4b87e;}
+  .pw-error{font-size:12px;color:#ef4444;margin-top:8px;min-height:18px;}
 
   /* ===== BOOK VIEWER ===== */
-  .book-tabs {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
+  .book-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;}
+  .book-tab{
+    padding:8px 16px;border:1px solid var(--border);border-radius:20px;
+    background:transparent;color:var(--text2);cursor:pointer;
+    font-size:12px;font-family:'Noto Sans KR',sans-serif;
+    transition:all 0.2s;white-space:nowrap;
   }
-  .book-tab {
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text2);
-    cursor: pointer;
-    font-size: 12px;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-    white-space: nowrap;
+  .book-tab:hover,.book-tab.active{
+    background:var(--accent);border-color:var(--accent);
+    color:#0d0d14;font-weight:700;
   }
-  .book-tab:hover, .book-tab.active {
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #0d0d14;
-    font-weight: 700;
+  .book-viewer{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);overflow:hidden;
   }
-  .book-viewer {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
+  .book-viewer-header{
+    background:var(--surface2);padding:14px 20px;
+    display:flex;justify-content:space-between;align-items:center;
+    border-bottom:1px solid var(--border);flex-wrap:wrap;gap:8px;
   }
-  .book-viewer-header {
-    background: var(--surface2);
-    padding: 14px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border);
-    flex-wrap: wrap;
-    gap: 8px;
+  .book-viewer-title{font-size:14px;font-weight:700;color:var(--accent);}
+  .book-page-info{font-size:12px;color:var(--text2);}
+  .book-pages-container{background:#111;min-height:200px;}
+  .book-page-img{width:100%;display:block;border-bottom:1px solid #1a1a1a;}
+  .book-page-img:last-child{border-bottom:none;}
+  .book-spread-row{display:flex;background:#111;}
+  .book-spread-row img{width:50%;display:block;border-right:1px solid #1a1a1a;}
+  .book-spread-row img:last-child{border-right:none;}
+  .book-nav{
+    display:flex;align-items:center;justify-content:center;
+    gap:12px;padding:14px;background:var(--surface2);
+    border-top:1px solid var(--border);flex-wrap:wrap;
   }
-  .book-viewer-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--accent);
+  .book-nav-btn{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:8px;padding:8px 20px;cursor:pointer;color:var(--text);
+    font-size:13px;font-family:'Noto Sans KR',sans-serif;transition:all 0.2s;
   }
-  .book-page-info { font-size: 12px; color: var(--text2); }
-  .book-pages-container { background: #111; min-height: 300px; }
-  .book-page-img {
-    width: 100%;
-    display: block;
-    border-bottom: 1px solid #1a1a1a;
-  }
-  .book-page-img:last-child { border-bottom: none; }
-  .book-spread-row {
-    display: flex;
-    gap: 0;
-    background: #111;
-  }
-  .book-spread-row img {
-    width: 50%;
-    display: block;
-    border-right: 1px solid #1a1a1a;
-  }
-  .book-spread-row img:last-child { border-right: none; }
-  .book-nav {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    padding: 14px 16px;
-    background: var(--surface2);
-    border-top: 1px solid var(--border);
-    flex-wrap: wrap;
-  }
-  .book-nav-btn {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 8px 20px;
-    cursor: pointer;
-    color: var(--text);
-    font-size: 13px;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-  }
-  .book-nav-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
-  .book-nav-btn:disabled { opacity: 0.3; cursor: default; }
-  .book-spread-toggle {
-    background: rgba(200,169,110,0.15);
-    border: 1px solid rgba(200,169,110,0.4);
-    border-radius: 8px;
-    padding: 8px 16px;
-    cursor: pointer;
-    color: var(--accent);
-    font-size: 12px;
-    font-family: 'Noto Sans KR', sans-serif;
-    transition: all 0.2s;
-  }
-  .book-spread-toggle:hover { background: rgba(200,169,110,0.25); }
-  .book-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 200px;
-    color: var(--text2);
-    font-size: 13px;
+  .book-nav-btn:hover:not(:disabled){border-color:var(--accent);color:var(--accent);}
+  .book-nav-btn:disabled{opacity:0.3;cursor:default;}
+  .book-spread-toggle{
+    background:rgba(200,169,110,0.15);border:1px solid rgba(200,169,110,0.4);
+    border-radius:8px;padding:8px 16px;cursor:pointer;color:var(--accent);
+    font-size:12px;font-family:'Noto Sans KR',sans-serif;
   }
 
 </style>
 </head>
 <body>
-
 
 <div id="pw-overlay">
   <div class="pw-box">
@@ -697,7 +603,6 @@
     <div class="pw-error" id="pw-error"></div>
   </div>
 </div>
-
 <header class="app-header">
   <div class="app-logo">하우스매니저<span>2급 학습앱</span></div>
   <nav class="header-nav">
@@ -808,33 +713,28 @@
     </div>
   </div>
 
-
-  <!-- ===== BOOK SECTION ===== -->
   <div class="section" id="book">
     <div class="book-tabs">
-      <button class="book-tab active" onclick="showBook('intro',this)">📋 서문·목차</button>
-      <button class="book-tab" onclick="showBook('unit1',this)">Ⅰ 공연예술의 이해</button>
-      <button class="book-tab" onclick="showBook('unit2',this)">Ⅱ 극장경영론</button>
-      <button class="book-tab" onclick="showBook('unit3',this)">Ⅲ 하우스매니저 실무</button>
-      <button class="book-tab" onclick="showBook('unit4',this)">Ⅳ 고객서비스 실무</button>
-      <button class="book-tab" onclick="showBook('unit5',this)">Ⅴ 고객 안전 및 위기관리론</button>
+      <button class="book-tab active" onclick="showBook('book_intro',this)">📋 서문·목차</button>
+      <button class="book-tab" onclick="showBook('book_unit1',this)">Ⅰ 공연예술의 이해</button>
+      <button class="book-tab" onclick="showBook('book_unit2',this)">Ⅱ 극장경영론</button>
+      <button class="book-tab" onclick="showBook('book_unit3',this)">Ⅲ 하우스매니저 실무</button>
+      <button class="book-tab" onclick="showBook('book_unit4',this)">Ⅳ 고객서비스 실무</button>
+      <button class="book-tab" onclick="showBook('book_unit5',this)">Ⅴ 고객 안전 및 위기관리론</button>
     </div>
     <div class="book-viewer">
       <div class="book-viewer-header">
         <div class="book-viewer-title" id="book-title">서문 · 목차 · 학습가이드</div>
         <div class="book-page-info" id="book-page-info"></div>
       </div>
-      <div class="book-pages-container" id="book-pages">
-        <div class="book-loading">로딩 중...</div>
-      </div>
+      <div class="book-pages-container" id="book-pages"></div>
       <div class="book-nav">
         <button class="book-nav-btn" id="book-prev" onclick="bookNav(-1)">← 이전</button>
-        <button class="book-spread-toggle" onclick="toggleSpread()" id="spread-btn">두 장씩 보기</button>
+        <button class="book-spread-toggle" id="spread-btn" onclick="toggleSpread()">두 장씩 보기</button>
         <button class="book-nav-btn" id="book-next" onclick="bookNav(1)">다음 →</button>
       </div>
     </div>
   </div>
-
   <!-- ===== UNIT QUIZ SECTIONS ===== -->
   <div class="section" id="unit1"><div id="quiz-unit1"></div></div>
   <div class="section" id="unit2"><div id="quiz-unit2"></div></div>
@@ -864,11 +764,11 @@
 
 <script>
 const BOOK_DATA = {
-  intro: [
+  book_intro: [
     "images/p001.jpg",
     "images/p002.jpg",
   ],
-  unit1: [
+  book_unit1: [
     "images/p003.jpg",
     "images/p004.jpg",
     "images/p005.jpg",
@@ -890,7 +790,7 @@ const BOOK_DATA = {
     "images/p021.jpg",
     "images/p022.jpg",
   ],
-  unit2: [
+  book_unit2: [
     "images/p023.jpg",
     "images/p024.jpg",
     "images/p025.jpg",
@@ -908,7 +808,7 @@ const BOOK_DATA = {
     "images/p037.jpg",
     "images/p038.jpg",
   ],
-  unit3: [
+  book_unit3: [
     "images/p039.jpg",
     "images/p040.jpg",
     "images/p041.jpg",
@@ -930,7 +830,7 @@ const BOOK_DATA = {
     "images/p057.jpg",
     "images/p058.jpg",
   ],
-  unit4: [
+  book_unit4: [
     "images/p059.jpg",
     "images/p060.jpg",
     "images/p061.jpg",
@@ -963,7 +863,7 @@ const BOOK_DATA = {
     "images/p088.jpg",
     "images/p089.jpg",
   ],
-  unit5: [
+  book_unit5: [
     "images/p090.jpg",
     "images/p091.jpg",
     "images/p092.jpg",
@@ -1012,8 +912,6 @@ function checkPw() {
   if (val === PW) {
     document.getElementById('pw-overlay').classList.add('hidden');
     sessionStorage.setItem('auth', '1');
-    // 첫 진입 시 book 초기화
-    showBook('intro', document.querySelector('.book-tab'));
   } else {
     const err = document.getElementById('pw-error');
     err.textContent = '비밀번호가 올바르지 않습니다.';
@@ -1023,31 +921,47 @@ function checkPw() {
   }
 }
 
-// 세션 유지 (새로고침해도 재입력 불필요)
 window.addEventListener('DOMContentLoaded', () => {
   if (sessionStorage.getItem('auth') === '1') {
     document.getElementById('pw-overlay').classList.add('hidden');
   } else {
-    document.getElementById('pw-input').focus();
+    setTimeout(() => document.getElementById('pw-input').focus(), 100);
   }
 });
 
 // ============================================================
+// MOCK HOME
+// ============================================================
+function renderMockHome() {
+  const container = document.getElementById('quiz-mock');
+  if (!container) return;
+  let cards = '';
+  [1,2,3,4,5].forEach(function(r) {
+    cards += '<div class="mock-card" onclick="startMock(' + r + ')">'
+           + '<div class="mock-num">' + r + '</div>'
+           + '<div class="mock-label">회차</div>'
+           + '<div class="mock-pass">합격 ' + MOCK_PASS[r] + '점</div>'
+           + '</div>';
+  });
+  container.innerHTML = '<div style="padding:8px 0 20px;">'
+    + '<p style="font-size:13px;color:var(--text2);margin-bottom:16px;">'
+    + '회차를 선택하면 바로 시작됩니다. 뒤로 갈수록 난이도가 높아집니다.</p>'
+    + '<div class="mock-grid">' + cards + '</div>'
+    + '</div>';
+}
+
+// ============================================================
 // BOOK VIEWER
 // ============================================================
-let bookState = {
-  section: 'intro',
-  pageIndex: 0,
-  spread: false,
-};
+let bookState = { section: 'book_intro', pageIndex: 0, spread: false };
 
 const BOOK_TITLES = {
-  intro:  '서문 · 목차 · 학습가이드',
-  unit1:  'Ⅰ. 공연예술의 이해',
-  unit2:  'Ⅱ. 극장경영론',
-  unit3:  'Ⅲ. 하우스매니저 실무 1',
-  unit4:  'Ⅳ. 고객서비스 실무 1',
-  unit5:  'Ⅴ. 고객 안전 및 위기관리론',
+  book_intro: '서문 · 목차 · 학습가이드',
+  book_unit1: 'Ⅰ. 공연예술의 이해',
+  book_unit2: 'Ⅱ. 극장경영론',
+  book_unit3: 'Ⅲ. 하우스매니저 실무 1',
+  book_unit4: 'Ⅳ. 고객서비스 실무 1',
+  book_unit5: 'Ⅴ. 고객 안전 및 위기관리론',
 };
 
 function showBook(sec, btn) {
@@ -1059,59 +973,53 @@ function showBook(sec, btn) {
 }
 
 function renderBookPage() {
-  const { section, pageIndex, spread } = bookState;
-  const pages = BOOK_DATA[section];
+  var bs = bookState;
+  var pages = BOOK_DATA[bs.section];
   if (!pages || pages.length === 0) return;
+  var total = pages.length;
+  var pi = bs.pageIndex;
 
-  const total = pages.length;
-  const container = document.getElementById('book-pages');
-  const titleEl   = document.getElementById('book-title');
-  const infoEl    = document.getElementById('book-page-info');
+  document.getElementById('book-title').textContent = BOOK_TITLES[bs.section] || bs.section;
 
-  titleEl.textContent = BOOK_TITLES[section];
-
-  if (spread) {
-    const src1 = pages[pageIndex];
-    const src2 = (pageIndex + 1 < total) ? pages[pageIndex + 1] : null;
-    container.innerHTML = `
-      <div class="book-spread-row">
-        <img src="${src1}" loading="lazy" alt="교재 ${pageIndex+1}페이지">
-        ${src2 ? `<img src="${src2}" loading="lazy" alt="교재 ${pageIndex+2}페이지">` : '<div style="width:50%;background:#111;"></div>'}
-      </div>`;
-    infoEl.textContent = `${pageIndex+1}${src2?'–'+(pageIndex+2):''} / ${total}`;
+  var container = document.getElementById('book-pages');
+  if (bs.spread) {
+    var src1 = pages[pi];
+    var src2 = (pi + 1 < total) ? pages[pi + 1] : null;
+    var right = src2
+      ? '<img src="' + src2 + '" loading="lazy">'
+      : '<div style="width:50%;background:#111;"></div>';
+    container.innerHTML = '<div class="book-spread-row">'
+      + '<img src="' + src1 + '" loading="lazy">'
+      + right
+      + '</div>';
+    document.getElementById('book-page-info').textContent =
+      (pi+1) + (src2 ? '–' + (pi+2) : '') + ' / ' + total;
   } else {
-    container.innerHTML = `<img class="book-page-img" src="${pages[pageIndex]}" loading="lazy" alt="교재 ${pageIndex+1}페이지">`;
-    infoEl.textContent = `${pageIndex+1} / ${total}`;
+    container.innerHTML = '<img class="book-page-img" src="' + pages[pi] + '" loading="lazy">';
+    document.getElementById('book-page-info').textContent = (pi+1) + ' / ' + total;
   }
 
-  // 네비게이션 버튼 상태
-  document.getElementById('book-prev').disabled = (pageIndex === 0);
-  document.getElementById('book-next').disabled = spread
-    ? (pageIndex + 2 >= total)
-    : (pageIndex + 1 >= total);
-
-  // 페이지 상단으로 스크롤
-  container.scrollTop = 0;
+  document.getElementById('book-prev').disabled = (pi === 0);
+  document.getElementById('book-next').disabled = bs.spread
+    ? (pi + 2 >= total) : (pi + 1 >= total);
 }
 
 function bookNav(dir) {
   const pages = BOOK_DATA[bookState.section];
-  const step  = bookState.spread ? 2 : 1;
+  const step = bookState.spread ? 2 : 1;
   const newIdx = bookState.pageIndex + dir * step;
   if (newIdx >= 0 && newIdx < pages.length) {
     bookState.pageIndex = newIdx;
     renderBookPage();
     document.getElementById('book-pages')
-      .scrollIntoView({ behavior: 'smooth', block: 'start' });
+      .scrollIntoView({ behavior:'smooth', block:'start' });
   }
 }
 
 function toggleSpread() {
   bookState.spread = !bookState.spread;
-  // 짝수 페이지 인덱스로 보정
-  if (bookState.spread) {
+  if (bookState.spread)
     bookState.pageIndex = Math.floor(bookState.pageIndex / 2) * 2;
-  }
   document.getElementById('spread-btn').textContent =
     bookState.spread ? '한 장씩 보기' : '두 장씩 보기';
   renderBookPage();
@@ -1336,8 +1244,8 @@ function showSection(id) {
   // 특별 초기화
   if (id === 'summary') showSummary(1, document.querySelector('.toc-btn'));
   if (id === 'book') renderBookPage();
-  if (id === 'schedule') renderSchedule();
   if (id === 'mock') renderMockHome();
+  if (id === 'schedule') renderSchedule();
 
   // 단원 퀴즈 자동 시작
   const unitMap = {unit1:'unit1',unit2:'unit2',unit3:'unit3',unit4:'unit4',unit5:'unit5'};
@@ -1366,32 +1274,12 @@ function startUnitQuiz(unitId, sectionId) {
   renderQuestion();
 }
 
-function renderMockHome() {
-  const container = document.getElementById('quiz-mock');
-  if (!container) return;
-  container.innerHTML = `
-    <div style="padding:8px 0 20px;">
-      <p style="font-size:13px;color:var(--text2);margin-bottom:16px;">
-        회차를 선택하면 바로 시작됩니다. 뒤로 갈수록 난이도가 높아집니다.
-      </p>
-      <div class="mock-grid">
-        ${[1,2,3,4,5].map(r => `
-          <div class="mock-card" onclick="startMock(${r})">
-            <div class="mock-num">${r}</div>
-            <div class="mock-label">회차</div>
-            <div class="mock-pass">합격 ${MOCK_PASS[r]}점</div>
-          </div>`).join('')}
-      </div>
-    </div>`;
-}
-
 function startMock(round) {
-  // 섹션 전환 (이미 mock 섹션이면 중복 호출 방지)
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  // mock 섹션 직접 활성화
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
   document.getElementById('mock').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.nav-btn')[7]?.classList.add('active');
-
   const qs = buildMockQuestions(round);
   currentQuiz = {
     questions: qs,
