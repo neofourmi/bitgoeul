@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>하우스매니저 2급 학습 앱</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Noto+Serif+KR:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0d0d14;
+    --surface: #16161f;
+    --surface2: #1e1e2a;
+    --border: #2a2a3a;
+    --accent: #c8a96e;
+    --accent2: #8b5cf6;
+    --accent3: #10b981;
+    --danger: #ef4444;
+    --text: #e8e8f0;
+    --text2: #9090a8;
+    --text3: #6060788;
+    --correct: #10b981;
+    --wrong: #ef4444;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ===== HEADER ===== */
+  .app-header {
+    background: linear-gradient(135deg, #1a1025 0%, #0d1a2e 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    gap: 16px;
+  }
+  .app-logo {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: -0.5px;
+    flex-shrink: 0;
+  }
+  .app-logo span { color: var(--text2); font-size: 12px; font-weight: 300; margin-left: 8px; }
+  .header-nav {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .header-nav::-webkit-scrollbar { display: none; }
+  .nav-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: all 0.2s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0d0d14;
+    font-weight: 700;
+  }
+
+  /* ===== MAIN ===== */
+  .main-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 16px;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* ===== HOME ===== */
+  .home-hero {
+    text-align: center;
+    padding: 40px 0 32px;
+  }
+  .home-hero h1 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .home-hero p { color: var(--text2); font-size: 14px; }
+
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin: 24px 0;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    text-align: center;
+  }
+  .stat-card .num {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-card .label { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  .unit-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .unit-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .unit-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 4px; height: 100%;
+    background: var(--accent);
+  }
+  .unit-card:nth-child(2)::before { background: #8b5cf6; }
+  .unit-card:nth-child(3)::before { background: #10b981; }
+  .unit-card:nth-child(4)::before { background: #f59e0b; }
+  .unit-card:nth-child(5)::before { background: #ef4444; }
+  .unit-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+  .unit-card .unit-num { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: 1px; }
+  .unit-card .unit-title { font-size: 15px; font-weight: 700; margin: 4px 0 8px; }
+  .unit-card .unit-info { font-size: 12px; color: var(--text2); }
+
+  .mock-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .mock-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .mock-card:hover { border-color: var(--accent2); }
+  .mock-card .mock-num { font-size: 20px; font-weight: 900; color: var(--accent2); }
+  .mock-card .mock-label { font-size: 10px; color: var(--text2); margin-top: 4px; }
+  .mock-card .mock-pass { font-size: 11px; color: var(--accent3); margin-top: 2px; font-weight: 700; }
+
+  /* ===== QUIZ AREA ===== */
+  .quiz-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .quiz-back {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 13px;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+  }
+  .quiz-back:hover { border-color: var(--accent); color: var(--accent); }
+  .quiz-title { font-size: 16px; font-weight: 700; flex: 1; }
+  .quiz-progress-text { font-size: 13px; color: var(--text2); }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin-bottom: 24px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+
+  .question-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 16px;
+  }
+  .question-meta {
+    font-size: 11px;
+    color: var(--text2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+  }
+  .question-text {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .options-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .option-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.2s;
+    font-size: 14px;
+  }
+  .option-item:hover:not(.disabled) { border-color: var(--accent); background: rgba(200,169,110,0.08); }
+  .option-num {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.2s;
+  }
+  .option-item.selected .option-num { background: var(--accent); color: #0d0d14; }
+  .option-item.correct { border-color: var(--correct); background: rgba(16,185,129,0.12); }
+  .option-item.correct .option-num { background: var(--correct); color: white; }
+  .option-item.wrong { border-color: var(--wrong); background: rgba(239,68,68,0.08); }
+  .option-item.wrong .option-num { background: var(--wrong); color: white; }
+  .option-item.disabled { cursor: default; }
+
+  .explanation-box {
+    background: rgba(200,169,110,0.08);
+    border: 1px solid rgba(200,169,110,0.3);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+    display: none;
+  }
+  .explanation-box.show { display: block; }
+  .explanation-box strong { color: var(--accent); }
+
+  .quiz-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .btn {
+    padding: 12px 24px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    font-family: 'Noto Sans KR', sans-serif;
+    transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #0d0d14; flex: 1; }
+  .btn-primary:hover { background: #d4b87e; }
+  .btn-secondary { background: var(--surface); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ===== RESULT ===== */
+  .result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .result-score {
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .result-score span { font-size: 24px; color: var(--text2); }
+  .result-pass {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 12px 0;
+    padding: 8px 24px;
+    border-radius: 20px;
+    display: inline-block;
+  }
+  .result-pass.pass { background: rgba(16,185,129,0.2); color: var(--correct); }
+  .result-pass.fail { background: rgba(239,68,68,0.15); color: var(--wrong); }
+  .result-detail {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+  }
+  .result-detail-item { background: var(--surface2); border-radius: 8px; padding: 12px; }
+  .result-detail-item .d-num { font-size: 22px; font-weight: 900; }
+  .result-detail-item .d-label { font-size: 11px; color: var(--text2); }
+  .correct-num { color: var(--correct); }
+  .wrong-num { color: var(--wrong); }
+  .skip-num { color: var(--text2); }
+
+  .review-list { margin-top: 16px; }
+  .review-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .review-item .r-q { font-weight: 500; margin-bottom: 8px; line-height: 1.6; }
+  .review-item .r-your { color: var(--wrong); font-size: 12px; }
+  .review-item .r-correct { color: var(--correct); font-size: 12px; }
+
+  /* ===== SUMMARY ===== */
+  .summary-toc {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .toc-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text2);
+    transition: all 0.2s;
+    font-family: 'Noto Sans KR', sans-serif;
+  }
+  .toc-btn:hover, .toc-btn.active { border-color: var(--accent); color: var(--accent); }
+
+  .summary-content {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+  }
+  .summary-content h2 {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 20px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .summary-content h3 {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 20px 0 10px;
+    padding-left: 12px;
+    border-left: 3px solid var(--accent);
+  }
+  .summary-content h4 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent2);
+    margin: 14px 0 6px;
+  }
+  .summary-content p { font-size: 13px; color: var(--text2); line-height: 1.8; margin-bottom: 8px; }
+  .summary-content ul { list-style: none; padding: 0; }
+  .summary-content ul li {
+    font-size: 13px;
+    color: var(--text2);
+    padding: 3px 0 3px 16px;
+    position: relative;
+    line-height: 1.7;
+  }
+  .summary-content ul li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 10px;
+    top: 5px;
+  }
+  .key-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--accent3);
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin: 10px 0;
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--text);
+  }
+  .key-box strong { color: var(--accent3); }
+  .tag {
+    display: inline-block;
+    background: rgba(200,169,110,0.15);
+    color: var(--accent);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 2px;
+  }
+
+  /* ===== SCHEDULE ===== */
+  .schedule-grid {
+    display: grid;
+    gap: 12px;
+  }
+  .week-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .week-header {
+    background: var(--surface2);
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .week-header .w-title { font-weight: 700; font-size: 15px; }
+  .week-header .w-theme {
+    font-size: 12px;
+    color: var(--accent);
+    background: rgba(200,169,110,0.15);
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+  .day-row {
+    display: grid;
+    grid-template-columns: 60px 1fr 180px;
+    padding: 10px 20px;
+    border-top: 1px solid var(--border);
+    font-size: 13px;
+    align-items: center;
+    gap: 12px;
+  }
+  .day-label { color: var(--accent); font-weight: 700; }
+  .day-content { color: var(--text); }
+  .day-note { color: var(--text2); font-size: 12px; text-align: right; }
+
+  /* ===== SOURCE NOTE ===== */
+  .source-note {
+    background: rgba(139,92,246,0.08);
+    border: 1px solid rgba(139,92,246,0.3);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 12px;
+    color: var(--text2);
+    margin-bottom: 20px;
+    line-height: 1.7;
+  }
+  .source-note strong { color: #a78bfa; }
+
+  /* ===== SCROLLBAR ===== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: repeat(2, 1fr); }
+    .unit-grid { grid-template-columns: 1fr; }
+    .mock-grid { grid-template-columns: repeat(3, 1fr); }
+    .summary-toc { grid-template-columns: repeat(3, 1fr); }
+    .result-detail { grid-template-columns: repeat(3, 1fr); }
+    .day-row { grid-template-columns: 50px 1fr; }
+    .day-note { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="app-logo">하우스매니저<span>2급 학습앱</span></div>
+  <nav class="header-nav">
+    <button class="nav-btn active" onclick="showSection('home')">🏠 홈</button>
+    <button class="nav-btn" onclick="showSection('unit1')">Ⅰ 공연예술</button>
+    <button class="nav-btn" onclick="showSection('unit2')">Ⅱ 극장경영</button>
+    <button class="nav-btn" onclick="showSection('unit3')">Ⅲ 하우스실무</button>
+    <button class="nav-btn" onclick="showSection('unit4')">Ⅳ 고객서비스</button>
+    <button class="nav-btn" onclick="showSection('unit5')">Ⅴ 안전관리</button>
+    <button class="nav-btn" onclick="showSection('mock')">📝 모의고사</button>
+    <button class="nav-btn" onclick="showSection('summary')">📖 요약본</button>
+    <button class="nav-btn" onclick="showSection('schedule')">📅 교육일정</button>
+  </nav>
+</header>
+
+<div class="main-container">
+
+  <!-- ===== HOME ===== -->
+  <div class="section active" id="home">
+    <div class="home-hero">
+      <h1>하우스매니저 2급</h1>
+      <p>청년인턴 멘토 교육 프로그램 · 12주 완성 학습 시스템</p>
+    </div>
+
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num">150</div>
+        <div class="label">단원별 예상문제<br>(5단원 × 30문항)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">5</div>
+        <div class="label">모의고사 회차<br>(60%→80% 합격선)</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">10p</div>
+        <div class="label">단권화 요약본<br>5단원 핵심 정리</div>
+      </div>
+      <div class="stat-card">
+        <div class="num">12</div>
+        <div class="label">주 교육과정<br>주5일 5시간</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:var(--text2); margin-bottom:12px; font-weight:700;">📚 단원별 예상문제 (각 30문항)</p>
+    <div class="unit-grid">
+      <div class="unit-card" onclick="showSection('unit1')">
+        <div class="unit-num">Unit Ⅰ</div>
+        <div class="unit-title">공연예술의 이해</div>
+        <div class="unit-info">연극·무용·오페라·뮤지컬·클래식·국악 | 30문항</div>
+      </div>
+      <div class="unit-card" onclick="showSection('unit2')">
+        <div class="unit-num">Unit Ⅱ</div>
+        <div class="unit-title">극장경영론</div>
+        <div class="unit-info">극장유형·경영·역사·무대용어 | 30문항</div>
+      </div>
+      <div class="unit-card" onclick="showSection('unit3')">
+        <div class="unit-num">Unit Ⅲ</div>
+        <div class="unit-title">하우스매니저 실무 1</div>
+        <div class="unit-info">직무·공연진행·법률·서비스인력관리 | 30문항</div>
+      </div>
+      <div class="unit-card" onclick="showSection('unit4')">
+        <div class="unit-num">Unit Ⅳ</div>
+        <div class="unit-title">고객서비스 실무 1</div>
+        <div class="unit-info">고객심리·서비스실무·이미지메이킹·불만응대 | 30문항</div>
+      </div>
+      <div class="unit-card" onclick="showSection('unit5')">
+        <div class="unit-num">Unit Ⅴ</div>
+        <div class="unit-title">고객 안전 및 위기관리론</div>
+        <div class="unit-info">안전관리·사고대응·군중심리·응급처치 | 30문항</div>
+      </div>
+    </div>
+
+    <p style="font-size:13px; color:var(--text2); margin: 20px 0 12px; font-weight:700;">📝 모의고사 (회차별 난이도 상향)</p>
+    <div class="mock-grid">
+      <div class="mock-card" onclick="startMock(1)">
+        <div class="mock-num">1</div>
+        <div class="mock-label">회차</div>
+        <div class="mock-pass">합격 60점</div>
+      </div>
+      <div class="mock-card" onclick="startMock(2)">
+        <div class="mock-num">2</div>
+        <div class="mock-label">회차</div>
+        <div class="mock-pass">합격 65점</div>
+      </div>
+      <div class="mock-card" onclick="startMock(3)">
+        <div class="mock-num">3</div>
+        <div class="mock-label">회차</div>
+        <div class="mock-pass">합격 70점</div>
+      </div>
+      <div class="mock-card" onclick="startMock(4)">
+        <div class="mock-num">4</div>
+        <div class="mock-label">회차</div>
+        <div class="mock-pass">합격 75점</div>
+      </div>
+      <div class="mock-card" onclick="startMock(5)">
+        <div class="mock-num">5</div>
+        <div class="mock-label">회차</div>
+        <div class="mock-pass">합격 80점</div>
+      </div>
+    </div>
+
+    <div class="source-note" style="margin-top:20px;">
+      <strong>※ 기출문제 관련 안내</strong><br>
+      하우스매니저 2급 자격시험(한국공연장매니저협회 주관)의 기출문제는 공식적으로 공개되어 있지 않습니다.
+      본 앱의 모든 문제는 교재(김영신 저, 4판 개정판, 2020) 내용을 바탕으로 출제 범위와 기준에 맞게 제작된 <strong>예상문제</strong>입니다.
+      교재 연습문제(각 단원 말미 수록)의 출제 형식을 참고하여 제작하였습니다.
+    </div>
+  </div>
+
+  <!-- ===== UNIT QUIZ SECTIONS ===== -->
+  <div class="section" id="unit1"><div id="quiz-unit1"></div></div>
+  <div class="section" id="unit2"><div id="quiz-unit2"></div></div>
+  <div class="section" id="unit3"><div id="quiz-unit3"></div></div>
+  <div class="section" id="unit4"><div id="quiz-unit4"></div></div>
+  <div class="section" id="unit5"><div id="quiz-unit5"></div></div>
+  <div class="section" id="mock"><div id="quiz-mock"></div></div>
+
+  <!-- ===== SUMMARY ===== -->
+  <div class="section" id="summary">
+    <div class="summary-toc">
+      <button class="toc-btn active" onclick="showSummary(1, this)">Ⅰ 공연예술</button>
+      <button class="toc-btn" onclick="showSummary(2, this)">Ⅱ 극장경영</button>
+      <button class="toc-btn" onclick="showSummary(3, this)">Ⅲ 하우스실무</button>
+      <button class="toc-btn" onclick="showSummary(4, this)">Ⅳ 고객서비스</button>
+      <button class="toc-btn" onclick="showSummary(5, this)">Ⅴ 안전관리</button>
+    </div>
+    <div class="summary-content" id="summary-body"></div>
+  </div>
+
+  <!-- ===== SCHEDULE ===== -->
+  <div class="section" id="schedule">
+    <div class="schedule-grid" id="schedule-body"></div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// DATA: 전체 문제은행
+// ============================================================
+
+const QUESTIONS = {
+
+// ======================== UNIT 1: 공연예술의 이해 ========================
+unit1: [
+  {q:"공연예술의 특성으로 옳지 않은 것은?", opts:["현장성","시간과 공간의 제약성","소멸성","복제 가능성"], ans:3, exp:"공연예술의 특성: 현장성, 시간·공간의 제약성, 소멸성, 복제 불가능성, 일회성. 복제 가능성은 영화 등 영상예술의 특성이다."},
+  {q:"공연예술의 장르가 아닌 것은?", opts:["연극","무용","오페라","예술영화"], ans:3, exp:"공연예술의 장르는 연극, 무용, 오페라, 클래식, 뮤지컬, 국악 등이다. 예술영화는 영상예술에 해당한다."},
+  {q:"연극의 본질적 요소 4가지를 올바르게 묶은 것은?", opts:["배우·무대·관객·희곡","배우·연출·무대·조명","관객·희곡·조명·음향","배우·무대·조명·음향"], ans:0, exp:"연극은 배우(배우), 무대(공간), 관객, 희곡(극본)의 4가지 본질적 요소로 구성된다."},
+  {q:"연극의 기능으로 옳지 않은 것은?", opts:["종교적 기능","오락적 기능","경제적 기능","심리적 기능"], ans:2, exp:"연극의 기능: 종교적 기능, 오락적 기능(핵심), 교육적 기능, 사회적 기능, 심리적 기능, 의료적 기능. 경제적 기능은 포함되지 않는다."},
+  {q:"아리스토텔레스의 '시학'에서 언급된 카타르시스(catharsis)의 의미는?", opts:["정화(purgation)","감동","오락","교육"], ans:0, exp:"카타르시스는 '정서 정화'라는 의미로, 비극이 드라마적 형식을 취해 관객의 긴장감 등 강박관념을 해소시킨다는 개념이다."},
+  {q:"무용의 발생지는 이탈리아어의 어느 동사에서 유래되었다고 하는가?", opts:["ballare","danza","arte","musica"], ans:0, exp:"발레는 '춤을 추다'라는 의미의 이탈리아어 동사 'ballare'에서 유래되었다."},
+  {q:"다음 중 무용의 종류가 아닌 것은?", opts:["발레","현대무용","민속무용","오페라"], ans:3, exp:"무용의 종류: 발레, 현대무용(모던댄스), 민속무용(포크댄스·사교댄스). 오페라는 무용이 아닌 음악극이다."},
+  {q:"오페라에 대한 설명으로 옳지 않은 것은?", opts:["음악을 중심으로 한 종합무대예술이다","모든 대사가 노래로 표현된다","오페레타와 오페라는 같은 것이다","발생지는 이탈리아 피렌체이다"], ans:2, exp:"오페레타와 오페라는 구별된다. 오페레타는 지문 대사가 들어 있지 않은 오페라와 달리 지문 대사가 삽입되어 있다."},
+  {q:"오페라의 발생 시기와 장소로 옳은 것은?", opts:["1597년 이탈리아 피렌체","1600년 프랑스 파리","1800년 독일 베를린","1200년 이탈리아 베네치아"], ans:0, exp:"오페라는 1597년 이탈리아 피렌체에서 르네상스 말기에 발생하였다."},
+  {q:"뮤지컬의 기원에 대한 설명으로 옳은 것은?", opts:["19세기 미국에서 탄생","16세기 독일에서 탄생","18세기 프랑스에서 탄생","14세기 이탈리아에서 탄생"], ans:0, exp:"뮤지컬은 19세기 미국에서 탄생하였으며 유럽의 대중연극, 오페라, 오페레타, 빌라드오페라 등이 그 근원이다."},
+  {q:"2001년 LG아트센터에서 공연되어 우리나라 뮤지컬 산업화의 계기가 된 작품은?", opts:["캣츠","맘마미아","오페라의 유령","미스사이공"], ans:2, exp:"오페라의 유령(2001년 LG아트센터 공연)은 7개월 공연 동안 94% 이상 매진을 기록하며 뮤지컬 산업화의 계기가 되었다."},
+  {q:"클래식 음악에서 '고전파음악'이 지배적이던 시대는?", opts:["18세기 중엽부터 19세기 초","16세기~17세기","20세기 초","14세기~15세기"], ans:0, exp:"클래식 음악에서 고전파음악(classicus)은 18세기 중엽부터 19세기 초에 걸치는 시기의 음악을 말한다."},
+  {q:"고전파음악의 대표 작곡가 3인으로 옳은 것은?", opts:["하이든·모차르트·베토벤","바흐·헨델·비발디","슈베르트·슈만·브람스","쇼팽·리스트·멘델스존"], ans:0, exp:"고전파음악의 대표 작곡가는 하이든, 모차르트, 베토벤이다."},
+  {q:"국악(國樂)의 정의로 가장 옳은 것은?", opts:["한국음악의 총칭","한국에서 연주되는 모든 음악","한국에 뿌리를 내린 음악","궁중에서 사용하던 음악만"], ans:2, exp:"국악이란 한국에 뿌리를 내린 음악, 또는 한국적 토양에서 나온 음악을 가리킨다. 한국에서 연주되는 모든 음악이 국악은 아니다(서양음악 포함)."},
+  {q:"판소리에 대한 설명으로 옳지 않은 것은?", opts:["연창자와 고수의 두 사람이 연행하는 공연예술","창(唱)과 아니리로 구성","2003년 유네스코 인류구전 및 세계무형유산걸작으로 선정","반드시 실내에서만 공연"], ans:3, exp:"판소리는 마당이나 실외에서도 공연할 수 있는 전통 공연예술이다. 야외 공연도 가능하다."},
+  {q:"사물놀이를 구성하는 4개의 악기로 올바른 것은?", opts:["꽹과리·징·장구·북","가야금·거문고·해금·대금","피리·대금·태평소·나각","편종·편경·박·축"], ans:0, exp:"사물놀이는 꽹과리·징·장구·북 네 가지 농악기로 연주하도록 편성한 음악이다."},
+  {q:"마임(Mime)의 어원은?", opts:["그리스어 Mimos(흉내)","라틴어 Mimus(배우)","이탈리아어 Mimo(몸짓)","프랑스어 Mime(무언극)"], ans:0, exp:"마임의 어원은 그리스어 'Mimos'에서 유래하며 '흉내'를 뜻한다."},
+  {q:"넌버벌 퍼포먼스(non-verbal performance)의 특징으로 옳은 것은?", opts:["언어를 배제한 비언어적 커뮤니케이션 수단을 활용","반드시 대사가 있어야 함","클래식 음악만 사용","실내에서만 공연 가능"], ans:0, exp:"넌버벌 퍼포먼스는 비언어 커뮤니케이션 수단을 활용해 이야기를 꾸미는 비언어적 커뮤니케이션과 퍼포먼스의 결합이다."},
+  {q:"오페라 극장 무대의 특성으로 옳은 것은?", opts:["마이크 없이 육성만으로 노래하는 것이 기본 조건","반드시 500석 이상","오케스트라 피트가 없어도 됨","소극장에서만 공연 가능"], ans:0, exp:"오페라 가수들은 마이크 없이 육성만으로 노래하는 것이 기본 조건이다."},
+  {q:"뮤지컬과 오페라의 차이점 설명으로 옳은 것은?", opts:["뮤지컬은 오케스트라 반주가 필요하지 않음","뮤지컬 배우들은 노래·춤·연기를 함께 하고, 오페라 가수는 육성 위주","오페라는 대사가 없고 뮤지컬은 모든 대사가 노래로 표현됨","오페라가 뮤지컬보다 먼저 생겼지만 지금은 오페라가 더 대중적"], ans:1, exp:"뮤지컬 배우는 노래·춤·연기를 함께 수행하고, 오페라 가수는 마이크 없이 육성으로만 노래하는 것이 기본 조건이다."},
+  {q:"한국 뮤지컬에서 '한강의 기적'이라 불리는 현상이 일어난 시기는?", opts:["1980년대","1990년대","2000년대 이후","2010년대 이후"], ans:2, exp:"2001년 오페라의 유령 이후 뮤지컬 산업이 급성장하여 2006년에는 전체 공연시장의 53%가량을 뮤지컬이 차지했다."},
+  {q:"공연예술의 장르 중 '종합예술'이라고 할 수 있는 대표적인 장르는?", opts:["연극","무용","국악","사물놀이"], ans:0, exp:"연극은 무대장치(미술)·조명·음향효과·안무·음악 등 다양한 예술의 참여를 필요로 하기 때문에 종합예술이라 할 수 있다."},
+  {q:"발레의 클래식 발레와 모던 발레를 구분하는 핵심은?", opts:["파 드 되(pas de deux) 형식의 사용 여부","공연 시간의 차이","무대 크기","관객 수"], ans:0, exp:"독립된 팬터마임 장면을 쓰는가의 여부에 따라 클래식발레와 모던발레로 구분한다."},
+  {q:"국악의 농현법 중 요성(搖聲)에 대한 설명으로 옳은 것은?", opts:["vibrato(떨음)처럼 음을 흔드는 기법","음을 급격히 올리는 기법","음을 급격히 내리는 기법","음을 길게 끄는 기법"], ans:0, exp:"요성(搖聲)은 vibrato처럼 음을 흔드는 농현법으로 중심음의 역할을 한다."},
+  {q:"국악 장단에서 '강박'으로 시작하고 '약박'으로 끝나는 것은?", opts:["한국음악","서양음악","재즈음악","판소리"], ans:0, exp:"한국음악은 강박으로 시작하여 약박으로 끝나는 반면, 대부분의 서양음악은 약박으로 시작하여 강박으로 끝난다."},
+  {q:"아동극의 구성 시간으로 옳은 것은?", opts:["1시간~2시간 이내","3시간 이상","30분 이내","30분~1시간"], ans:0, exp:"아동극의 구성은 1시간~2시간 이내이다. 대부분 보여지는 부분에 강조가 많고 동작이 크며 대사가 적다."},
+  {q:"연극의 '이중적 특성'이란?", opts:["사건 내용의 허구성을 바탕으로 이루어진다","배우와 관객이 항상 동일한 시간대에 있다","연극은 반드시 실내에서만 공연된다","배우 없이 관객만으로도 성립된다"], ans:0, exp:"연극의 이중적 특성이란 연극의 사건이 현실을 바탕으로 구성되지만 대체로 가공되어 허구적 성격을 가짐을 의미한다."},
+  {q:"오페라에서 주연 가수가 공연하지 못하는 경우 대신하는 것은?", opts:["스탠바이(Stanby)","언더스터디(Understudy)","올터너티브(Alternative)","스윙(Swing)"], ans:1, exp:"언더스터디는 자신의 특정 배역이 있지만 메인 배우가 공연을 못하게 되는 경우 그 배역을 대신하는 것이다."},
+  {q:"판소리의 구성 요소가 아닌 것은?", opts:["창(唱)","아니리","발림","장고"], ans:3, exp:"판소리는 창(노래), 아니리(사설), 발림(몸짓), 추임새로 구성된다. 장고(장구)는 고수가 치는 악기이나 장고 자체가 구성요소는 아니다."},
+  {q:"낭만파음악의 대표적 특징으로 옳은 것은?", opts:["개인주의적·주관주의적 표현 강조","형식과 균형을 중시하는 고전적 경향","집단음악을 중심으로 발전","절제된 감정 표현"], ans:0, exp:"낭만파 음악은 개인주의적·주관주의적 경향이 강하며, 고전주의 형식에서 벗어나 자유로운 표현을 추구하였다."},
+],
+
+// ======================== UNIT 2: 극장경영론 ========================
+unit2: [
+  {q:"극장의 법적 정의에서 '공연법'상 극장은 연 며칠 이상 공연에 제공할 목적으로 설치된 시설이어야 하는가?", opts:["30일 이상 또는 연속 90일 이상","60일 이상","연중 무휴","100일 이상"], ans:0, exp:"극장은 연 90일 이상 또는 계속하여 30일 이상 공연에 제공할 목적으로 설치하여 운영하는 시설이어야 한다."},
+  {q:"건축법상 극장으로 분류되는 바닥면적 기준은?", opts:["300㎡ 미만은 제2종 근린생활시설","500㎡ 미만은 제1종","100㎡ 미만은 근린생활","200㎡ 미만은 문화시설"], ans:0, exp:"건축법상 바닥면적의 합계가 300㎡ 미만인 것은 제2종 근린생활시설로, 300㎡ 이상인 것은 문화 및 집회시설로 분류한다."},
+  {q:"극장의 시설규모에 따른 구분으로 옳은 것은?", opts:["대극장: 800석~1200석","특대극장: 800석 이상","소극장: 500석 미만","중극장: 1000석~1500석"], ans:0, exp:"대극장 800~1200석, 특대극장 1200석 이상, 중극장 300~800석, 소극장 300석 미만이다."},
+  {q:"원형극장(Arena stage)의 특징으로 옳은 것은?", opts:["관객이 무대를 사방으로 둘러싸는 형태","프로시니엄 아치로 무대와 관객석이 구분됨","무대가 관객석 방향으로 돌출된 형태","관객과 무대가 마주보는 형태"], ans:0, exp:"원형극장(Arena stage)은 관객이 무대를 사방으로 둘러싼 형태로, 그리스 원형극장이 대표적이다."},
+  {q:"프로시니엄(Proscenium) 무대의 특징은?", opts:["사진틀처럼 무대 전면의 개구부(開口部)를 구획","관객이 무대를 사방으로 둘러쌈","무대가 관객석 사이로 돌출","관객 중앙에 무대가 위치"], ans:0, exp:"프로시니엄은 사진틀처럼 무대 전면의 개구부를 구획하는 액자형 무대로 가장 일반적이고 보편화된 무대형태이다."},
+  {q:"돌출무대(Thrust stage)에 대한 설명으로 옳은 것은?", opts:["프로시니엄과 원형무대의 장점을 결합한 형태","무대 전체가 관객에게 둘러싸인 형태","가변형 무대의 일종","실내에서만 사용 가능한 무대"], ans:0, exp:"돌출무대는 프로시니엄 무대와 원형무대의 장점을 결합하여 극적 효과를 높이기 위해 고안된 무대형태이다."},
+  {q:"공공극장 직접운영의 장점으로 옳은 것은?", opts:["행정중심 예산지원 안정성·지지체와의 원활한 관계","전문성 확보 서비스 개선·예산분리로 수익성 추구","직원신분 불안정·공공성 저해","수익성 추구로 인한 대관료 증가"], ans:0, exp:"공공극장 직접운영은 행정중심 예산지원 안정성과 지자체와의 원활한 관계가 장점이다."},
+  {q:"민간위탁운영 공연장의 단점으로 옳은 것은?", opts:["직원신분 불안정·공공성 저해·수익성 추구","행정중심 수동적 운영","수익분리처리 어려움","전문성 부족"], ans:0, exp:"민간위탁은 직원신분 불안정, 공공성 저해, 수익성 추구 등이 단점이다."},
+  {q:"한국 최초의 국립극장인 협률사가 설립된 연도는?", opts:["1902년","1908년","1935년","1945년"], ans:0, exp:"한국 최초의 국립극장인 협률사는 1902년 설립되었다. 왕실의 주도로 설립된 최초의 서양식 실내 연회장이다."},
+  {q:"동양극장이 설립된 연도는?", opts:["1935년 10월","1908년","1945년","1950년"], ans:0, exp:"동양극장은 1935년 10월 준공된 국내 유일의 연극전문극장이었다. 1935년 11월 1일 개관공연을 시작했다."},
+  {q:"극장 관객 공간(FOH: Front Of House)에 포함되지 않는 것은?", opts:["오케스트라 피트","객석(Auditorium)","로비(Foyer/Lobby)","매표소(Box Office)"], ans:0, exp:"오케스트라 피트는 무대 공간(Stage)에 속한다. FOH는 객석, 로비, 매표소, 물품보관소, Catering Service, 귀빈실, 안내소 등이다."},
+  {q:"무대 공간 중 'Green Room'은 무엇인가?", opts:["출연자 대기실","조명실","음향실","무대기계실"], ans:0, exp:"Green Room은 출연자 대기실이다. 무대 공간에는 Stage Door, 무대, 조명실, 음향실, 무대기계실, 오케스트라 피트, 분장실, 출연자 대기실(Green Room), 연습실 등이 있다."},
+  {q:"무대 위치 방향 중 'House Left'는 무엇을 의미하는가?", opts:["공연자가 무대에서 객석을 향해 선 자리에서의 왼쪽","객석에서 바라보는 왼쪽","관객의 오른쪽","공연자의 오른쪽"], ans:0, exp:"무대에서 공연자가 객석을 향해 섰을 때 공연자의 왼쪽을 무대 좌측(House Left, Stage Right)이라 한다."},
+  {q:"회전무대(Revolving stage)의 크기 기준은?", opts:["프로시니엄 폭의 0.8배 이상","프로시니엄 폭의 1.5배","프로시니엄 폭과 동일","제한 없음"], ans:0, exp:"회전무대는 프로시니엄 폭의 0.8배 이상으로 하는 것이 일반적이다."},
+  {q:"무대 그리드(grid)의 높이 기준으로 옳은 것은?", opts:["프로시니엄 높이의 2.5~3배","프로시니엄 높이의 1.5배","40m 이상","제한 없음"], ans:0, exp:"그리드의 높이는 일반적으로 프로시니엄 높이의 2.5~3배 정도를 확보하는 것이 좋다."},
+  {q:"팔로우 스포트라이트(follow spotlight)에 대한 설명으로 옳은 것은?", opts:["움직이는 공연자나 이동 물체에 조명을 주기 위한 조명기구","무대 전체를 균일하게 비추는 조명","무대 바닥 조명","특수효과 전용 조명"], ans:0, exp:"팔로우 스포트라이트는 움직이는 공연자나 이동 물체에 조명을 주기 위해 수동으로 작동하는 조명기기다."},
+  {q:"프로시니엄 무대에서 개구부의 일반적 비율은?", opts:["4:3","16:9","1:1","2:1"], ans:0, exp:"프로시니엄 개구부는 시각적으로 보기에 적합한 4:3의 비율을 채택하는 경우가 많다."},
+  {q:"무대 크기 중 '앞무대(Apron Stage)'는 어디인가?", opts:["프로시니엄 아치 앞쪽 무대 공간","무대 뒤쪽 공간","무대 옆 공간","무대 위쪽 공간"], ans:0, exp:"앞무대(Apron Stage)는 프로시니엄 아치 앞쪽의 무대 공간으로 관객과 가장 가까운 공간이다."},
+  {q:"세계에서 가장 오래된 르네상스 극장은?", opts:["이탈리아 비첸체의 올림피코 극장","그리스 디오니소스 극장","영국 글로브 극장","파리 오페라좌"], ans:0, exp:"올림피코 극장은 이탈리아 베네토 주 비첸체에 위치하는 세계에서 가장 오래된 르네상스 극장이다."},
+  {q:"모스크바 볼쇼이 극장의 재건 연도는?", opts:["1825년 1월 18일","1800년","1850년","1900년"], ans:0, exp:"볼쇼이 극장은 1825년 1월 18일 재개관하여 현재 위치인 Theatre Square에 건물이 설립되었다."},
+  {q:"극장 운영에서 '가동일'이란?", opts:["휴관일, 무대점검일을 제외한 공연장을 사용할 수 있는 기간","공연만 하는 날","매일 운영하는 날","관객이 있는 날만"], ans:0, exp:"가동일은 휴관일, 무대점검일을 제외한 공연장을 사용할 수 있는 기간을 말한다."},
+  {q:"공연장 대관계약서에 반드시 포함되어야 할 사항이 아닌 것은?", opts:["극장 측의 대관수익 배분","대관의 전차","극장의 관리 및 책임소재의 구분","입장권에 관한 사항"], ans:0, exp:"대관계약서에는 대관의 전차, 극장의 관리 및 책임소재의 구분, 입장권에 관한 사항, 공연진행에 관한 사항, 대관료책정 규정 등이 포함된다. 대관수익 배분은 별도 계약 사항이다."},
+  {q:"블랙박스(Black box) 무대에 대한 설명으로 옳은 것은?", opts:["객석이나 무대의 형태를 공연에 따라 바꿀 수 있는 가변형 무대","고정된 프로시니엄 무대","원형극장의 일종","야외공연 전용 무대"], ans:0, exp:"블랙박스 무대는 객석이나 무대의 형태를 공연에 따라 바꿀 수 있는 가변형 무대로, 소극장이나 스튜디오극장 등에서 활용된다."},
+  {q:"음향 용어 중 '잔향(反響: 에코)'이 없는 공간에서의 이상적인 콘서트홀 음향 조건이 아닌 것은?", opts:["음의 확산이 좋은 것","잔향이 없을 것","각 악기의 분리가 적당하게 밸런스를 이룰 것","공기의 조화관계 및 소음이 방해가 되지 않을 것"], ans:1, exp:"콘서트홀 음향의 이상적인 조건: 잔향이 적당할 것(없어서는 안 됨), 음의 확산이 좋을 것, 각 악기의 분리가 적당할 것, 공기의 조화관계 및 소음이 방해되지 않을 것."},
+  {q:"공연장의 '프로듀싱 씨어터(Producing Theater)'와 '논 프로듀싱 씨어터(Non Producing Theater)'의 차이는?", opts:["자체 제작 공연을 올리느냐 vs 대관 위주로 운영하느냐","규모의 차이","국공립 vs 민간","좌석 수의 차이"], ans:0, exp:"프로듀싱 씨어터는 예술제작 능력을 구축하고 있어 자체적으로 공연물을 제작 발표하는 극장이고, 논 프로듀싱 씨어터는 유통 기능으로 공연을 상영하는 극장이다."},
+  {q:"오케스트라 피트(orchestra pit)가 필요한 공연 장르는?", opts:["오페라와 뮤지컬","연극","현대무용","사물놀이"], ans:0, exp:"오페라와 뮤지컬은 두 장르 모두 오케스트라 반주를 필요로 하므로 무대 아래에 오케스트라 피트 공간이 있다."},
+  {q:"극장경영의 기본 원칙으로 옳은 것은?", opts:["프로그램은 설립 목적과 기본 운영방침에 부합해야 함","수익만을 최우선으로 해야 함","대관만으로 운영해야 함","관객 수가 최우선 목표"], ans:0, exp:"극장 프로그램 운영의 기본원칙: 프로그램은 설립 목적과 기본 운영방침에 부합해야 함, 극장의 여건을 고려하여 프로그램을 만들어야 함, 시작의 여건에 맞는 프로그램을 만들어야 함."},
+  {q:"부조리극의 다른 명칭으로 옳은 것은?", opts:["반연극 또는 전위(Avant-garde)드라마","사실주의극","표현주의극","자연주의극"], ans:0, exp:"부조리극은 고대 그리스극의 전통을 파괴한 사실주의 극 이상으로 사실주의 극을 철저히 파괴해 반연극적 특성을 보여주며, 부조리극이라는 말 이외에 '반연극' 혹은 '전위(Avantgarde)드라마'라고도 한다."},
+  {q:"유보석이란 무엇인가?", opts:["관객 불만사항 발생 시 좌석 교환을 위해 사전에 확보해 둔 좌석","VIP 전용 좌석","장애인 전용 좌석","예비 스태프 좌석"], ans:0, exp:"유보석이란 관객 불만사항 발생 시 좌석 교환을 위해 사전에 확보해 둔 좌석을 말한다."},
+  {q:"서양에서 가장 오래된 극장 형식은?", opts:["크레타섬의 크노소스 궁전과 파이스토스 궁전에서 볼 수 있는 형식","프로시니엄 무대","블랙박스 무대","돌출무대"], ans:0, exp:"서양에서 가장 오래된 극장의 형식은 크레타섬의 파이스토스 궁전(B.C.2000)과 크노소스 궁전(B.C.1600)에서 볼 수 있다."},
+],
+
+// ======================== UNIT 3: 하우스매니저 실무 ========================
+unit3: [
+  {q:"하우스매니저(House Manager)의 정의로 가장 적절한 것은?", opts:["공연장 운영을 위한 관객의 안전·서비스 관리 및 인력운영, 객석·로비 관리를 담당하는 사람","무대기술을 담당하는 사람","공연 기획을 담당하는 사람","티켓 판매를 전담하는 사람"], ans:0, exp:"하우스매니저는 공연장 운영을 위한 관객의 안전·서비스 관리 및 인력운영, 객석·로비 관리를 담당하는 사람이다."},
+  {q:"하우스매니지먼트(Housemanagement)의 정의는?", opts:["공연장을 관리하고 운영하는 것","무대를 관리하는 것","홍보와 마케팅을 담당하는 것","공연을 기획하는 것"], ans:0, exp:"하우스매니지먼트는 공연장을 관리하고 운영하는 것으로, 공연장의 목적을 달성하기 위해 영위하는 활동을 계획하고, 통제하여 이를 작업하고 관리하는 총제적인 일을 말한다."},
+  {q:"하우스매니저가 점검하는 공연장 시설물이 아닌 것은?", opts:["기계실, 전기실 등 공연장관리시설","좌석, 어린이보조방석, 장애인석 등 객석시설","식음료, 놀이방, 화장실, 승강기 등 로비시설","주차장, 귀빈실 등 관객편의를 위한 부대시설"], ans:0, exp:"하우스매니저가 점검하는 공연장 시설에는 객석시설, 로비시설, 부대시설(편의시설)이 포함된다. 기계실, 전기실 등의 공연장관리시설은 기술팀 담당이다."},
+  {q:"공연장 안전시설 점검 시 확인해야 할 사항으로 옳지 않은 것은?", opts:["배우의 연기력 수준","비상구, 비상구 유도등, 소화기 위치와 상태","소화기 및 소화전의 위치와 상태","비상대피로 안내문, 관객대피동선"], ans:0, exp:"배우의 연기력은 안전시설 점검 사항이 아니다. 안전시설 점검에는 비상구, 소화기, 소화전, AED, 비상대피로 등 로비시설의 안전 상태 확인이 포함된다."},
+  {q:"공연 장르별 진행 요령에서 클래식 공연 시 지연관객 입장이 가능한 시점은?", opts:["연주자와 미리 협의한 입장가능 시점(이닝)","공연 시작 후 언제든지","공연 중간 휴식 시간","입장 불가"], ans:0, exp:"클래식 공연에서 지연관객은 연주자와 미리 협의하여 결정된 입장시점(이닝)에만 입장할 수 있다. 악장 사이의 박수 시간이 일반적이다."},
+  {q:"연극 공연에서 지연관객 입장 시 가장 좋은 시점은?", opts:["음향이나 조명 소리가 크거나 조명이 밝아지는 무전시점","막 사이","공연 종료 후","언제든지 가능"], ans:0, exp:"연극에서 지연관객 입장은 음향의 소리가 크거나 조명이 밝아지는 무전시점, 조명이 크거나, 조명 무전시점에 관객입장을 시킨다."},
+  {q:"하우스 운영 예산 계획에 포함되는 것이 아닌 것은?", opts:["무대장치 제작비","서비스 인력의 인건비, 복리후생비","무전기, 유니폼, 랜턴, 구급약품, 소모품 등 하우스 물품","비상약품, 여성용품 등 관객 서비스 용품"], ans:0, exp:"하우스 운영 예산에는 서비스 인력의 인건비·복리후생비, 하우스 물품, 관객 서비스 용품, 옷장·접이식 의자 등이 포함된다. 무대장치 제작비는 제작팀 예산이다."},
+  {q:"공연법 제11조에 따라 공연장 시설에 맞는 서비스 인력 안전 매뉴얼을 구성해야 한다. 안전 매뉴얼에 포함되어야 하는 것이 아닌 것은?", opts:["배우의 캐릭터 분석","공연장 구조, 조직별 업무분장","관객 대피로","비상 시 대처 방안, 훈련 시나리오"], ans:0, exp:"안전 매뉴얼에는 공연장 구조, 조직별 업무분장, 관객 대피로, 안내원 행동요령, 비상 시 대처 방안, 훈련 시나리오, 유관기관 연락처 등이 포함된다. 배우의 캐릭터 분석은 해당되지 않는다."},
+  {q:"서비스 인력의 '숙련도'를 구성하는 요소가 아닌 것은?", opts:["급여 수준","근무기간","업무능력","공연장 이해"], ans:0, exp:"서비스 인력의 숙련도는 근무기간, 업무능력, 공연장 이해 등을 포함한다. 급여 수준은 숙련도 구성 요소가 아니다."},
+  {q:"공연진행서(스탭 회의서)에 포함되는 내용이 아닌 것은?", opts:["배우의 개인 SNS 계정","공연기간 및 시간","티켓가격","관람연령(입장가능연령)"], ans:0, exp:"공연진행서에는 공연정보(공연기간, 공연시간, 티켓가격, 관람연령), 하우스 공연운영 관련사항 등이 포함된다. 배우의 개인 SNS는 포함되지 않는다."},
+  {q:"리허설의 종류 중 최종 리허설은?", opts:["드레스 리허설(의상 리허설)","테크니컬 리허설","프레스 리허설","런스루 리허설"], ans:0, exp:"드레스(의상) 리허설은 공연 전 마지막 리허설로, 실제 공연이나 방송과 똑같이 중단 없이 실시된다."},
+  {q:"공연장 가동일의 정의로 옳은 것은?", opts:["휴관일, 무대점검일을 제외한 공연장을 사용할 수 있는 기간","공연이 있는 날만","매일 운영","관객이 입장하는 날만"], ans:0, exp:"가동일은 휴관일, 무대점검일을 제외한 공연장을 사용할 수 있는 기간을 말한다. 가동일 중 공연준비·무대 철수작업이 진행된 기간을 가동일 중 가동일이라 한다."},
+  {q:"고객 컴플레인(Complain)과 클레임(Claim)의 차이점으로 옳은 것은?", opts:["컴플레인은 개선 요구, 클레임은 보상·배상 요구","컴플레인은 보상 요구, 클레임은 개선 요구","둘 다 동일한 의미","컴플레인은 법적 조치, 클레임은 구두 불만"], ans:0, exp:"클레임(Claim)은 계약을 이행하지 않아 발행되는 손해에 대한 배상을 요구하는 객관적 관점의 불만. 컴플레인(Complain)은 주관적 관점에서 상품이나 서비스에 대한 불평불만을 제기하는 것으로 개선을 요구한다."},
+  {q:"공연장 관객 컴플레인 응대의 6가지 원칙 중 가장 중요한 것은?", opts:["자세와 태도를 최우선으로 하라","항상 규칙대로 처리하라","고객의 말을 들어라","빠른 처리가 최선이다"], ans:0, exp:"공연장 고객 컴플레인 응대의 원칙 중 '자세와 태도를 최우선으로 하라'가 가장 중요하다. 모든 고객의 클레임에 대한 응대는 자세와 태도가 가장 중요하다."},
+  {q:"근로기준법상 서비스 인력 채용 시 반드시 계획에 포함해야 하는 사항은?", opts:["근로시간, 급여 등 채용조건","배우 캐스팅 기준","공연 레퍼토리 선정","극장 리모델링 계획"], ans:0, exp:"근로기준법 제1장, 제2장, 제3장, 제4장, 제9장, 고용노동부 개인정보 보호지침 제2장, 제3장, 제4장에 따라 근로시간, 급여 등 채용조건을 포함한 계획을 수립해야 한다."},
+  {q:"장애인이 공연장 이용 시 동반인과 함께 지정석으로 안내하거나, 매니저와 협의된 좌석이 있으면 미리 체크해야 한다. 다음 중 장애인 이용 안내 원칙으로 옳지 않은 것은?", opts:["장애인을 반드시 1층에만 배치한다","휠체어를 미리 확보된 자리나 로비에 안전하게 보관하되 다른 관객의 동선에 방해가 되지 않도록 배치한다","장애인을 위한 편의시설의 이용방법을 미리 숙지한다","동반인과 함께 지정석으로 안내한다"], ans:0, exp:"장애인을 반드시 1층에만 배치하는 규정은 없다. 휠체어 이용자는 지정된 공간에 배치하되 동선에 방해되지 않도록 한다."},
+  {q:"무용 공연에서 지연관객 입장 시 주의사항으로 옳은 것은?", opts:["발레공연 경우 작품의 흐름을 알고 지연관람객 입장시점을 정해야 한다","언제든지 입장 가능하다","막 전환 시에만 입장한다","음향이 크면 입장 금지"], ans:0, exp:"무용 공연 시 지연관객 입장은 공연 중에 매우 어렵다. 발레공연의 경우 작품의 흐름을 알고 지연관람객 입장시점을 정해야 하며 슬리스트들의 솔로를 하고 연기 시 입장하면 치명적 영향을 줄 수 있다."},
+  {q:"공연 중 대중가요·팝 콘서트에서 지연관객 입장 기준이 되는 것은?", opts:["큐시트(공연 진행의 순서와 곡목의 순서가 기록된 시트)","연주자의 판단","막 구분","관객의 요청"], ans:0, exp:"대중가요·팝 콘서트의 경우 큐시트(공연 진행의 순서와 곡목의 순서가 기록된 시트)가 미리 작성되어, 그에 따라 지연 관객의 입장 시점을 정할 수 있다."},
+  {q:"스태프 회의 참석자에 포함되는 것이 아닌 것은?", opts:["공연 관람객","연출","기술감독","하우스매니저"], ans:0, exp:"스태프 회의 참석자: 연출, 기술감독, 무대감독, 조명감독, 음향감독, 무대기계감독, 공연기획자, 무대디자이너, 티켓매니저, 컴퍼니매니저(조연출), 대관담당자, 안전관리자, 하우스매니저 등. 공연 관람객은 해당 없음."},
+  {q:"공연장 사전답사의 주요 목적이 아닌 것은?", opts:["배우 프로필 확인","공연장 시설 이해 및 공연 특성에 맞게 설명","공연장 이용 시 발생할 수 있는 사고 설명","공연장 사용 여건에 따라 답사일정을 조절"], ans:0, exp:"공연장 사전답사는 공연장 시설 이해, 사고 설명, 답사일정 조절 등이 목적이다. 배우 프로필 확인은 해당 없음."},
+  {q:"최저임금법에 따라 서비스 인력 급여 산출 시 확인해야 할 조항은?", opts:["제1장 제4조, 제5조, 제6조","제10조, 제11조","제20조, 제21조","제1조만"], ans:0, exp:"최저임금법 제1장 제4조, 제5조, 제6조에 따라 정확한 임금수준과 급여내역을 판단한다."},
+  {q:"공연장 관객 에티켓 관리 시 '관람제한연령'을 안내해야 하는 이유는?", opts:["공연별 관람 제한 연령에 따라 입장을 제한할 수 있기 때문","모든 공연에 관람 제한 연령이 있기 때문","법적 의무이기 때문","좌석 배치 때문에"], ans:0, exp:"공연별 관람제한연령 등을 확인하여 입장을 제한할 수 있으며, 해당 사항을 관객에게 사전 안내해야 한다."},
+  {q:"공연 중 전시장 관람예절로 옳지 않은 것은?", opts:["관람 종료 1시간 전까지 입장할 수 없다","관람 종료 1시간 전까지 입장을 완료해야 한다","전시장 내에는 음료 및 음식 반입이 금지되어 있다","휴대전화는 전원을 차단해 주시기 바란다"], ans:0, exp:"관람예절: 관람 종료 1시간 전까지 입장을 완료해야 한다. 음료·음식 반입 금지, 전화 차단 등 기본 예절을 지켜야 한다."},
+  {q:"공연장 고객 서비스 개발 중 '고객설문 조사'의 목적이 아닌 것은?", opts:["배우의 개인 취향 파악","서비스 개선의 필요에 따라 설문조사를 계획","설문조사 방법론 기초이론에 따라 설문방법 및 내용을 개발","설문결과에 따라 고객의 의견을 분석"], ans:0, exp:"고객 설문조사는 서비스 개선을 위한 도구다. 배우의 개인 취향 파악은 해당 없음."},
+  {q:"공연장 하우스 운영 공간 관리에서 '로비 점검'의 주요 사항이 아닌 것은?", opts:["로비 천장 인테리어 디자인 변경","로비등, 부대시설, 매표시설, 화장실 등의 로비 상태 점검","로비의 관객동선을 방해하는 요소를 찾아냄","안전매뉴얼에 제시된 법률·다중이용시설 등의 실내공기질 관리법 제5조에 따라 로비를 점검"], ans:0, exp:"로비 점검은 로비의 각 시설 상태 점검과 동선 방해 요소 제거, 법규에 따른 점검이다. 천장 인테리어 디자인 변경은 점검 사항이 아니다."},
+  {q:"공연장 홍보물 관리에서 확인해야 할 법률은?", opts:["옥외 광고물 등 관리법 제3조, 제7조, 제9조","소방기본법","공연법 제1조","저작권법 제5조"], ans:0, exp:"홍보물(포토존, 배너, 현수막, DID(전자배너) 등) 설치 시 옥외 광고물 등 관리법 제3조, 제7조, 제9조를 확인해야 한다."},
+  {q:"공연 중 국악 공연에서 판소리나 민요에서 '엄두', '좋지', '잘한다' 등의 추임새나 박수는 어느 시점에 치는 것이 바른 관람예절인가?", opts:["연주자와 관중 모두의 흥을 돋울 수 있을 때(당연히)","곡이 끝난 후에만","절대 금지","막간 휴식 시간에만"], ans:0, exp:"국악 공연에서 판소리나 민요에서 '엄두', '좋지', '잘한다' 등의 추임새나 박수는 연주자와 관중 모두의 흥을 돋울 수 있다."},
+  {q:"공연 후 하우스 관련 온라인 불만사항을 관리하는 목적은?", opts:["고객 불만사항을 수집하여 하우스 업무의 개선점을 판단하기 위해","배우의 SNS 관리를 위해","공연 홍보를 위해","관객 통계 수집만을 위해"], ans:0, exp:"온라인 불만사항 관리의 목적은 고객 불만사항을 수집하여 하우스 업무의 개선점을 판단하기 위함이다."},
+],
+
+// ======================== UNIT 4: 고객서비스 실무 ========================
+unit4: [
+  {q:"고객(顧客)에 대한 설명으로 가장 옳은 것은?", opts:["고객은 단순한 손님이 아니라 주인이다","고객은 귀찮은 사람이다","고객은 우리가 봉사해야 할 대상이다","고객은 서비스를 요구할 권리가 없다"], ans:0, exp:"고객이라는 용어는 응대자나 공연장의 입장에서 볼 때 다시 또 와주었으면 하는 사람이지만, 고객은 단순한 손님이 아니라 주인인 것이다."},
+  {q:"서비스(Service)의 어원은?", opts:["라틴어 'servus'(노예)","그리스어 'servios'","영어 'serve'","프랑스어 'servir'"], ans:0, exp:"서비스(Service)라는 말은 라틴어 'servus'(노예)라는 의미에서 유래되었으며, 사전적으로는 봉사, 최선을 다함, 돌봄 등의 뜻을 가지고 있다."},
+  {q:"서비스의 특성 중 '무형성'에 대한 설명으로 옳은 것은?", opts:["서비스는 보거나 만질 수 없어 경험하지 않고는 품질을 따지기 어렵다","서비스는 즉시 생산되고 소멸된다","서비스는 환경이나 사람에 따라 달라진다","서비스는 저장하거나 재고로 관리하기 어렵다"], ans:0, exp:"무형성이란 서비스는 보거나 만질 수 없어 경험하지 않고는 그 품질을 따지기가 어려운 특성이다."},
+  {q:"서비스의 특성 중 '동시성'의 의미는?", opts:["서비스는 제공하는 즉시 생산되고 또한 소멸된다","서비스는 보이지 않는다","서비스는 항상 동일하다","서비스는 저장 가능하다"], ans:0, exp:"동시성이란 서비스는 제공하는 즉시 생산되고 또한 소멸된다는 특성이다."},
+  {q:"서비스 접점의 3가지 요소가 아닌 것은?", opts:["상품 가격(Price)","사람(People)","절차(Process)","물리적 증거(Physical Evidence)"], ans:0, exp:"서비스 접점의 3가지 요소: 사람(People), 절차(Process), 물리적 증거(Physical Evidence). 가격은 포함되지 않는다."},
+  {q:"고객 서비스 접점을 '진실의 순간(MOT: Moments Of Truth)'이라 한 사람은?", opts:["얀 칼슨(Jan Carlzon)","리처드 노만(Richard Normann)","칼 알브레히트","톰 피터스"], ans:0, exp:"서비스 접점을 '진실의 순간(M.O.T: Moments Of Truth)'이라는 개념으로 정리한 사람은 얀 칼슨(Jan Carlzon)이다."},
+  {q:"이미지메이킹의 기본 요소가 아닌 것은?", opts:["높은 학벌","온화하고 친절한 표정","바르고 절도 있는 자세","따뜻하게 먼저 건네는 인사"], ans:0, exp:"이미지메이킹의 기본 요소: 온화하고 친절한 표정, 바르고 절도 있는 자세, 따뜻하게 먼저 건네는 인사, 단정하고 깔끔한 용모, 부드럽고 상냥한 말씨. 학벌은 해당 없음."},
+  {q:"'친절 서비스의 3S'에서 3S가 의미하는 것은?", opts:["Smile, Speed, Sincerity","Service, Style, Standard","Smile, Style, Service","Speed, Safety, Smile"], ans:0, exp:"친절 서비스의 3S: Smile(웃어라·미소지어라), Speed(신속하게 처리하라·빨리 응대하라), Sincerity(성실하게 대하라·열성을 다하라)."},
+  {q:"고객에게 방향이나 장소를 안내할 때 올바른 방법은?", opts:["손가락을 모으고 손바닥 전체를 펴서 방향을 가리킨다","손가락으로만 가리킨다","발로 방향을 표시한다","눈짓으로만 표시한다"], ans:0, exp:"방향·지시 동작: 손가락을 모으고 손바닥 전체를 펴서 방향을 가리킨다. 손끝이 보이거나 손목이 굽지 않도록 한다."},
+  {q:"'고객을 보내버리는 서비스' 유형 중 '규정일'은 무엇인가?", opts:["고객의 마음을 적극적으로 헤아리지 않고 규정만 앞세우며 일관하는 서비스","고객을 무시하거나 기관에 있다고 해서 건방떠는 태도","기계적으로 대하거나 냉담한 태도","자기 업무영역과 권한의 한계만을 내세우며 책임을 떠넘기는 서비스"], ans:0, exp:"규정일: 고객의 마음을 적극적으로 헤아리지 않고 규정만 앞세우며 일관하는 서비스 태도."},
+  {q:"서비스인이 경계해야 할 태도가 아닌 것은?", opts:["고객의 마음을 읽으려 노력하는 태도","고객이 들어서도 맞아주지 않고 무관심한 태도","기계적으로 대하거나 냉담한 태도","규정상 어쩔 수 없다고 다른 대안에 대해 연구하지 않는 태도"], ans:0, exp:"서비스인이 갖추어야 할 태도: 고객의 마음을 읽으려 노력하는 태도. 경계해야 할 태도: 무관심, 냉담, 기계적, 건방진 태도 등."},
+  {q:"인사의 각도별 의미 설명으로 옳은 것은?", opts:["감사의 마음 전달에는 45도 정도의 정중례가 적당하다","15도는 깊은 감사나 사과를 표현","30도는 가벼운 목례","45도는 스치거나 좁은 장소에서의 간단한 인사"], ans:0, exp:"인사 각도: 15도(반가움 표현), 32도(일반적), 45도(감사·사과의 마음 전달에 적당), 상황별로 차이가 있다."},
+  {q:"고객유형 중 '까다로운 고객'에 대한 응대법으로 옳은 것은?", opts:["잘못된 것은 꼭 짚고 넘어가는 유형이므로 정중하고 친절하게 응대하되 잘못을 지적하면 진심으로 받아들이는 자세가 중요","일단 사과하고 고객이 충분히 불만을 토로하도록 귀 기울여 경청","화가 난 고객이므로 불가능한 일보다는 가능한 일을 제시","적절한 질문으로 서비스를 리드해 가도록 한다"], ans:0, exp:"까다로운 고객 응대: 직원에게 예의를 지키는 경우가 비교적 많으며 잘못은 꼭 짚고 넘어가는 유형. 정중하고 친절하게 응대하되 잘못을 지적하면 진심으로 받아들이는 자세가 중요하다."},
+  {q:"확장된 서비스 패러다임에서 '핵심요소'는 무엇인가?", opts:["친절은 기본, 신속·정확·전문성 등 다양한 요소","친절만","빠른 속도만","전문성만"], ans:0, exp:"확장된 고객서비스의 핵심요소: 친절은 기본, 신속·정확·전문성 등 다양한 요소."},
+  {q:"고객 불만 응대 시 '설득하라'의 원칙 의미는?", opts:["관객은 무모할 수 있고 무지할 수 있으므로 상황을 설명하고 설득하는 과정이 중요하다","항상 고객의 요구대로 해주어야 한다","규정대로만 처리한다","빠르게 대처하는 것이 최선이다"], ans:0, exp:"공연장 고객 컴플레인 응대 원칙 중 '설명하고 설득하라': 관객은 무모할 수 있고 무지할 수 있다. 늘 처음처럼 상황을 설명하고 설득하는 과정이 중요하다."},
+  {q:"고객 불만 중 '자막기 및 자막 오류'에 대한 응대 사례로 옳은 것은?", opts:["'자막 이상으로 인해 중간에 놓친 내용이 있다면 제가 그 내용을 알려드려도 괜찮을까요?'라고 안내한다","사과하지 않는다","무시한다","기다리게 한다"], ans:0, exp:"자막기 및 자막 오류 불만 응대: '네, 공연 중 자막에 문제가 생겨서 많이 불편하셨죠... 자막 이상으로 인해 중간에 놓친 내용이 있다면 제가 그 내용을 알려드려도 괜찮을까요?' 등으로 안내한다."},
+  {q:"서비스의 3단계 분류에서 '제공시점 서비스'는?", opts:["제공 시 서비스","사전 서비스","사후 서비스","피드백 서비스"], ans:0, exp:"서비스 3단계: 사전 서비스(광고·안내 등 고객이 직원을 만나기 전에 경험), 제공시점 서비스(제공 시 서비스), 사후 서비스(서비스 확인·불만 해결 등)."},
+  {q:"공연장 불만고객 전화 응대 원칙으로 옳은 것은?", opts:["고객이 불만을 이야기하더라도 우선 사과는 먼저 하지 않는다","고객의 감정을 상하지 않도록 불만내용을 들으며 중간 상황 설명을 한다","근무자의 개인정보도 중요하므로 전화를 받는 사람의 이름과 소속은 밝히지 않는다","성득이 안 될 때는 권한이 있는 사람에게 연결해 주거나 상황을 바꾸어 보는 것도 좋다"], ans:3, exp:"불만고객 전화 응대: 성득이 안 될 때는 권한이 있는 사람에게 연결해 주거나 상황을 바꾸어 보는 것도 좋다."},
+  {q:"고객의 기본적 욕구로 옳지 않은 것은?", opts:["고객은 직원이 자신의 의견에 반드시 동의해 주기를 바란다","고객은 직원에게 환영받고 싶어 한다","고객은 직원이 나에게만 관심을 주길 바란다","고객은 중요한 사람으로 인식되기를 바란다"], ans:0, exp:"고객의 기본적 욕구: 직원에게 환영받고 싶어 함, 직원이 나에게만 관심을 주길 바람, 중요한 사람으로 인식되기를 바람, 절대로 손해 보기를 원하지 않음, 자기기준에서 판단하고 평가함. 반드시 동의를 요구하지는 않는다."},
+  {q:"공연 중 'Front Row(전시장 관람예절)'에서 잘못된 것은?", opts:["입장하자마자 아무 자리에 앉는다","관람 종료 1시간 전까지 입장을 완료해야 한다","전시장 내에는 음료 및 음식 반입이 금지되어 있다","동선에 따라 관람하시기 바랍니다"], ans:0, exp:"전시장 관람예절: 관람 종료 1시간 전까지 입장을 완료해야 한다. 아무 자리에 앉는 것은 잘못된 행동이다."},
+  {q:"'고객의 이야기를 적극적으로 들어라'는 서비스 원칙에서 핵심은?", opts:["고객의 이야기에 귀를 기울이지 않는 독선적인 태도는 외골수라는 이야기를 듣게 된다","빠르게 처리하는 것","규정대로 처리하는 것","고객의 모든 요구를 들어주는 것"], ans:0, exp:"서비스 개선 원칙 중 '고객의 이야기를 적극적으로 들어라': 타인의 이야기를 잘 듣는 것은 말하는 것보다 훨씬 중요하다. 귀를 기울이지 않는 독선적인 태도는 소위 외골수라는 이야기를 듣게 된다."},
+  {q:"고객의 기대를 준비하고 만들어라는 원칙은 어떤 의미인가?", opts:["고객이 기대하는 것을 미리 알고 준비하며 그 기대를 뛰어넘어 감동을 주는 것","고객의 기대를 낮추는 것","항상 규정대로 처리하는 것","고객의 불만을 무시하는 것"], ans:0, exp:"고객의 기대를 준비하고 만들어라: 고객이 기대하는 것을 미리 알고 준비하여 고객의 기대를 뛰어넘으면 고객은 감동한다."},
+  {q:"화가 난 고객에 대한 응대법으로 옳은 것은?", opts:["일단 사과를 하고 고객이 불만을 충분히 토로하도록 귀 기울여 경청하고, 불가능한 일보다는 가능한 일을 제시하며, 객관성을 유지하고 원인을 빨리 알아내어 해결한다","무시한다","즉시 환불한다","다른 직원에게 넘긴다"], ans:0, exp:"화가 난 고객 응대: 일단 사과를 하고 고객이 충분히 불만을 토로하도록 귀 기울여 경청하고, 불가능한 일보다는 가능한 일을 제시하며, 객관성을 유지하고 원인을 빨리 알아내어 해결한다."},
+  {q:"서비스 매뉴얼의 내용에 포함되는 것이 아닌 것은?", opts:["배우의 사생활","공연장의 이해","관객응대 요령","특수 관객(장애인, 노약자, 어린이, 외국인, 단체관람객) 응대요령"], ans:0, exp:"서비스 매뉴얼에는 공연장의 이해, 관객응대 요령, 특수관객 응대요령, 의전 등이 포함된다. 배우의 사생활은 해당 없음."},
+  {q:"관람예절 안내문에 반드시 포함되어야 하는 사항이 아닌 것은?", opts:["출연자 사인회 행사 안내","휴대폰 전원차단","음식물 반입금지","사진촬영·녹음금지"], ans:0, exp:"관람예절 안내문: 휴대폰 전원차단, 음식물 반입금지, 사진촬영·녹음금지, 장르별 관람법 등이 포함된다. 출연자 사인회 행사 안내는 별도 사항이다."},
+  {q:"교육 매뉴얼의 내용에 포함되는 것은?", opts:["서비스 마인드, 복장, 용모, 근무수칙, 공연장 소개, 공연장 규정, 공연 및 공연 장르에 대한 이해","배우 캐릭터 분석","무대기술 이해","조명 시스템 운용"], ans:0, exp:"교육 매뉴얼은 서비스 마인드, 복장, 용모, 근무수칙, 공연장 소개, 공연장 규정, 공연 및 공연 장르에 대한 이해 등을 포함한다."},
+  {q:"서비스 인력 교육 내용 중 '인력교육'에 반드시 포함되는 것은?", opts:["관객 안내원 기본교육, 공연장에서 자주 발생하는 관객 서비스 교육 및 장애인 응대교육, 비상 시 대처할 수 있는 안전교육","배우 연기 지도","조명 디자인","음향 시스템"],  ans:0, exp:"서비스 인력교육: 관객 안내원 기본교육, 공연장에서 자주 발생하는 관객 서비스 교육 및 장애인 응대교육, 비상 시 대처할 수 있는 안전교육이 포함된다."},
+  {q:"고객 만족을 위한 '지속적인 관심'을 가져라의 원칙은?", opts:["고객을 획득하여 이들을 고정화, 단골화하였다고 하여 서비스가 끝나는 것도 아니다","한 번 서비스하면 끝이다","규정대로만 처리하면 된다","고객의 장기 가치는 중요하지 않다"], ans:0, exp:"고객만족을 위한 지속적인 관심: 고객을 획득하여 이들을 고정화, 단골화하였다고 하여 서비스가 끝나는 것도 아니다. 인간적 유대와 신뢰가 없는 고객서비스는 생명력이 없어 장기적으로 지속될 수가 없다."},
+  {q:"무례하거나 경솔한 고객에 대한 응대법으로 옳은 것은?", opts:["침착하고 단호하게 대처하며, 고객의 태도에 처분히 응대하고 다른 사람들 앞에서 고객의 자존심을 짓밟지 않도록 주의하며, 정소를 옮겨서 개인적으로 이야기하는 것도 바람직하다","즉시 퇴장 요청","무시한다","다른 직원에게 넘긴다"], ans:0, exp:"무례하거나 경솔한 고객 응대: 침착하고 단호하게 대처하며, 고객의 태도에 처분히 응대하고 다른 사람들 앞에서 고객의 자존심을 짓밟지 않도록 주의하며, 정소를 옮겨서 개인적으로 이야기하는 것도 바람직하다."},
+  {q:"'고객을 위한 마음'을 준비하는 자세에 관한 설명으로 옳지 않은 것은?", opts:["고객을 서비스하는 자가 아니라 우위에서 군림하는 존재로 여긴다","고객을 긍정적으로 바라보고 대한다","고객에게 성의를 갖고 응대한다","친절한 마음씨를 잊지 않는다"], ans:0, exp:"고객을 위한 마음가짐: 고객을 긍정적으로 바라보고 대한다, 고객에게 성의를 갖고 응대한다, 친절한 마음씨를 잊지 않는다, 올바른 예절로 응대한다, 고객과의 약속은 반드시 지킨다 등. 군림하는 존재로 여기는 것은 잘못된 태도이다."},
+],
+
+// ======================== UNIT 5: 고객 안전 및 위기관리론 ========================
+unit5: [
+  {q:"공연장 안전의 중요성에 대한 내용으로 적절하지 않은 것은?", opts:["공연장은 불특정 다수가 이용하는 공공시설로서 기본적으로 안전에 의무와 책임이 없다","관람객의 사고발생시 인명피해가 크다","공연장의 안전은 그 나라의 문화수준을 나타내고 이미지 형성에 큰 영향을 준다","피해를 입을 경우 개보수 비용이 많이 든다"], ans:0, exp:"공연장은 불특정 다수가 이용하는 공공시설로서 기본적으로 안전에 의무와 책임이 있다."},
+  {q:"안전관련 출입문에 대한 일일 점검리스트의 내용으로 적절하지 않은 것은?", opts:["외부 출입을 막기 위해 공연 중에도 출입문이 잠겨있는지 확인","출입문 부근에 방해물 존재 여부","모든 출입문은 잘 열리고 단히는지 확인","잠금장치는 제대로 작동하는지 확인"], ans:0, exp:"비상구 출입문은 공연 중 항상 열려 있어야 한다(비상 시 대피용). 공연 중에 출입문이 잠겨있으면 안 된다."},
+  {q:"공연장 화재 예방의 기본 원칙이 아닌 것은?", opts:["화재 발생 시 즉시 소방서에 신고 후 대피","시설 내를 순회해서 조기발견과 초기소화에 노력","연기에 의한 피해로부터 몸을 지킨다","화재 경보 벨이 울렸을 때 직원은 관객에게 바로 설명하고 지시한다"], ans:0, exp:"화재 예방과 대응: 시설 순회 조기발견·초기소화, 연기로부터 몸 보호, 경보 시 관객에게 즉시 설명·지시가 핵심이다. 신고는 동시에 진행하되, 신고만 하고 대피를 늦추면 안 된다."},
+  {q:"공연장 위기상황 유형으로 옳지 않은 것은?", opts:["연출자의 개인적 취향으로 인한 공연 스타일 변경","초대권 남발 등의 매표사고","공연시작 지연사고","공연의 취소나 중단사고"], ans:0, exp:"공연장 위기상황 유형: 기기 고장, 매표사고(초대권 남발), 공연시작 지연사고, 공연의 취소나 중단사고 등. 연출자의 개인 취향에 의한 스타일 변경은 위기상황이 아니다."},
+  {q:"초대권 남발 등의 매표사고 발생 시 대응 원칙으로 옳은 것은?", opts:["티켓을 검표 할 시에도 반드시 극장의 객석 수에 맞는 양의 티켓만을 검인하게 하고 이런 상황이 벌어졌을 경우 빠른 시간 내에 손해를 배상해 줄 수 있는 방법이 미리 강구되어 있어야 한다","무시한다","관객을 쫓아낸다","매표소를 폐쇄한다"], ans:0, exp:"매표사고 대응: 티켓 검표 시 극장 객석 수에 맞는 양의 티켓만을 검인하고, 스탭회의에서 충분히 설명하며, 손해 배상 방법을 미리 강구해야 한다."},
+  {q:"화재 발생 시 연기에 의한 피해를 막기 위한 행동으로 옳은 것은?", opts:["손수건으로 코와 입을 누르고 연기를 들이마시지 않도록 한다","연기 속으로 뛰어간다","불꽃을 먼저 피한다","창문을 열고 환기시킨다"], ans:0, exp:"화재 시 연기 대처: 화재가 작은 불 등 소규모인 경우에도 유독가스가 발생할 위험성은 매우 높다. 손수건으로 코와 입을 누르고 연기를 들이마시지 않도록 한다."},
+  {q:"공연 중단 또는 취소 시 대응 원칙으로 옳은 것은?", opts:["위기상황을 판단하여 공연 중단 또는 취소 여부를 협의할 수 있다","무조건 계속 공연한다","관객에게 알리지 않는다","공연사를 귀책으로만 처리한다"], ans:0, exp:"공연 취소·중단 위기상황: 위기상황을 판단하여 공연 중단 또는 취소 여부를 협의할 수 있으며, 관객에게 알리고 응급치료가 필요한 경우 응급치료를 실시한다."},
+  {q:"공연시작 지연사고 시 관객에게 알려야 하는 시점은?", opts:["일반적으로 10분정도가 늦어지면 관객들에게 사정을 알리는 것이 좋다","30분 후","1시간 후","공연 종료 후"], ans:0, exp:"공연시작 지연사고: 공연은 반드시 정해진 시간에 시작되어야 하는 것이 기본이나 일반적으로 10분정도가 늦어지면 관객들에게 사정을 알리는 것이 좋다."},
+  {q:"군중심리의 특성으로 옳지 않은 것은?", opts:["군중 속에 있으면 개인의 판단력이 더욱 강해진다","군중이 모이면 개인 억제력이 감소한다","군중은 충동적·흥분적으로 행동하기 쉽다","군중은 암시에 걸리기 쉽다"], ans:0, exp:"군중심리의 특성: 개인 억제력 감소, 충동적·흥분적 행동, 암시에 걸리기 쉬움, 책임감 분산 등. 군중 속에서는 개인 판단력이 약해진다."},
+  {q:"공연장 안전사고 예방을 위한 기본조건이 아닌 것은?", opts:["관객 개인의 건강상태를 매일 체크한다","공연장의 기본시설은 안전을 고려하여 설계·시공되어야 한다","모든 기기는 주의 깊게 조작하고 수시로 점검해야 한다","안전매뉴얼을 개발하고 매뉴얼에 따른 지식과 비상사태를 대비한 훈련을 전 직원이 수시로 실시해야 한다"], ans:0, exp:"공연장 안전을 위한 기본조건: 기본시설 안전 설계·시공, 기기 주의 깊게 조작·수시 점검, 안전사고 유발 요소 미연에 방지, 안전매뉴얼 개발·훈련 실시. 관객 개인 건강상태 매일 체크는 현실적으로 불가능하며 공연장 안전 기본조건이 아니다."},
+  {q:"메르스(MERS) 국내 첫 감염자가 발생한 연도와 사망자 수는?", opts:["2015년 5월, 38명 사망","2016년, 20명 사망","2014년, 50명 사망","2017년, 10명 사망"], ans:0, exp:"메르스는 2015년 5월 국내 첫 감염자가 발생한 사례로, 186명의 환자가 발생하였으며, 이 중 38명이 사망했다. 2015년 12월 23일 종식 선언되었다."},
+  {q:"코로나19(COVID-19) 국내 첫 확진자 발생 시기는?", opts:["2020년 1월 20일","2019년 12월","2021년 1월","2018년 11월"], ans:0, exp:"코로나19는 2020년 1월 20일 국내 첫 확진자가 발생한 신종바이러스 감염 사례이다."},
+  {q:"공연장 감염증 유행 시 초기 대응 프로세스 중 '격리소 선정'에 대한 설명으로 옳은 것은?", opts:["공연장 내 감염증 의심환자를 격리할 수 있는 별도의 공간(격리소)를 마련하고, 의심환자는 2차 체온 측정 후 별도공간으로 안내한다","즉시 귀가시킨다","무시한다","경찰에 신고한다"], ans:0, exp:"감염증 격리소 선정: 공연장 내에 감염증 의심환자를 격리할 수 있는 별도의 공간을 마련하고, 의심환자는 2차 체온 측정 후 별도공간으로 안내해야 한다."},
+  {q:"공연장 안전훈련의 기본 원칙으로 옳은 것은?", opts:["실제 상황을 가정하여 반복 훈련하는 것이 효과적이다","일회성 훈련으로 충분하다","훈련은 관리자만 참여한다","문서 교육으로만 가능하다"], ans:0, exp:"공연장 안전훈련은 실제 상황을 가정하여 반복 훈련하는 것이 효과적이며, 전 직원이 참여해야 한다."},
+  {q:"응급환자 발생 시 '졸도(기절)'에 대한 초기 대처법으로 옳은 것은?", opts:["환자의 머리와 몸을 수평으로 눕히고 다리를 높여주고 옷을 느슨하게 하여 뇌로 피가 잘 흐르도록 하면 대개 잠시 후에 회복된다","즉시 물을 마시게 한다","환자를 세워둔다","운동을 시킨다"], ans:0, exp:"졸도 대처: 환자의 머리와 몸을 수평으로 눕히고 다리를 높여주고 옷을 느슨하게 하여 뇌로 피가 잘 흐르도록 하면 대개 잠시 후에 회복된다."},
+  {q:"인사불성(의식불명) 응급환자 발생 시 초기 대처로 가장 먼저 해야 할 것은?", opts:["빠르게 응급의료서비스기관에 도움을 청한다","무시한다","자리를 이동시킨다","물을 마시게 한다"], ans:0, exp:"인사불성(의식불명) 환자 대처: 심장마비가 되면 의식이 있는데도 불구하고 갑자기 죽는다. 환자를 절대 안정시키며 빨리 응급의료서비스기관에 도움을 청한다."},
+  {q:"어린이 경련(발작) 발생 시 대처법으로 옳은 것은?", opts:["차갑고 단단한 표면에서 환자를 부드러운 물건들이 있는 곳으로 부드럽게 옮겨주고, 경련을 막으려고 환자를 붙잡거나 하면 안 된다","즉시 강하게 붙잡는다","입에 무엇을 넣는다","찬물을 뿌린다"], ans:0, exp:"어린이 경련 대처: 차갑고 단단한 표면에서 환자를 부드러운 물건들이 있는 곳으로 부드럽게 옮겨주고, 경련을 막으려고 환자를 붙잡거나 하면 안 된다."},
+  {q:"공연장 뇌출혈 환자 대처법으로 옳은 것은?", opts:["환자를 절대 안정시키며 따뜻한 점도 될어주고, 환자를 안심시켜 두려움을 느끼지 않도록 하고 온도에 적당한 점도를 유지시켜 주고 가능한한 빨리 응급의료서비스기관에 도움을 청한다","즉시 물을 마시게 한다","운동을 시킨다","귀가시킨다"], ans:0, exp:"뇌출혈 환자 대처: 한쪽 눈동자가 다른 한쪽의 것보다 크고 입은 마비로 인하여 한쪽으로 쏠리는 증상이 발생한다. 환자를 안정시키고 빨리 응급의료서비스기관에 도움을 청한다."},
+  {q:"공연 중 관객 중 심장마비가 의심되는 환자 발생 시 가장 먼저 해야 할 일은?", opts:["빠르게 응급의료서비스기관에 도움을 청한다","공연을 중단한다","관객에게 알린다","공연을 계속 진행한다"], ans:0, exp:"심장마비 환자 대처: 언제 어디서 심장마비환자를 만나게 될지 모른다. 환자를 절대 안정시키며 빨리 응급의료서비스기관에 도움을 청한다."},
+  {q:"화재 초기 소화가 성공한 경우의 대응으로 옳은 것은?", opts:["사태가 수습된 것을 관객에게 방송하고, 관계자와 공연의 중지/계속을 협의, 결정한다","바로 공연을 재개한다","관객을 전원 퇴장시킨다","신고를 취소한다"], ans:0, exp:"초기 소화가 성공한 경우(D4): 사태가 수습된 것을 관객에게 방송한다, 관계자와 공연의 중지/계속을 협의, 결정한다."},
+  {q:"공연장 감염증 확산 예방을 위한 공연장 운영 원칙이 아닌 것은?", opts:["모든 공연을 무기한 취소한다","손 씻기, 기침에절 등 신종코로나바이러스감염증 예방을 위한 위생수칙 교육 및 홍보","일부 출입문 폐쇄, 객석 거리두기 좌석제(한 칸 띄어 앉기), 자가문진표 작성, 발열체크, 매표 및 화장실 내 거리두기 줄서기 바닥표시 부착","관객 접점 근무자 마스크 착용 의무화"], ans:0, exp:"감염증 예방을 위한 공연장 운영: 위생수칙 교육·홍보, 거리두기 좌석제, 발열체크, 마스크 착용 의무화 등이 원칙이다. 모든 공연을 무기한 취소하는 것은 원칙이 아니다."},
+  {q:"공연장 안전을 위해 피난동선을 미리 확인해 두는 이유는?", opts:["방화벽이 내려거나 정전이 일어나거나 하면 시설 내 미로처럼 되어 피난경로가 매우 알기 어렵기 때문","공연이 더 재미있기 때문","관객이 요청하기 때문","법적 의무이기 때문만"], ans:0, exp:"피난동선 미리 확인: 방화벽이 내려거나 정전이 일어나거나 하면 시설 내 미로처럼 되어 피난경로가 매우 알기 어렵다. 미리 방화벽이 내린 상태나 정전의 상태에서의 피난훈련을 실시해서 피난동선을 확인해 두면 좋다."},
+  {q:"공연장 화재 예방에서 '초기소화는 2명 이상이서 한다'는 원칙이 있다. 초기소화를 혼자 하지 않는 이유는?", opts:["화재발생장소 가까이에 있는 사람이 초기소화를 하는 동안, 동시에 사무실이나 방화센터 등에 있는 사람이 119에 알리게 하기 위해서","혼자서도 가능하지만 규정이므로","관습이기 때문","법적 의무이기 때문만"], ans:0, exp:"초기소화가 2명 이상인 이유: 화재발생장소 가까이에 있는 사람이 초기소화를 하는 동안, 동시에 사무실이나 방화센터 등에 있는 사람이 119에 알리게 하기 위해서이다."},
+  {q:"딸꾹질에 대한 응급 처치 설명으로 가장 옳은 것은?", opts:["자신의 손으로 되도록 앞으로 빼내고 1~2분 동안 자기의 손으로 되도록 앞으로 빼내고 냉수를 조금씩 천천히 마신다","강하게 배를 누른다","즉시 귀가시킨다","공연을 중단한다"], ans:0, exp:"딸꾹질 응급처치: 혀를 1~2분 동안 자기의 손으로 되도록 앞으로 빼내고 냉수를 조금씩 천천히 마신다."},
+  {q:"공연장 안전사고 중 가장 치명적인 결과를 초래할 수 있는 사고 유형은?", opts:["대규모 화재 또는 군중 압사사고","자막 오류","음향 불량","조명 고장"], ans:0, exp:"대규모 화재 또는 군중 압사사고는 공연장에서 가장 치명적인 결과(대규모 인명피해)를 초래할 수 있다."},
+  {q:"간질(뇌전증) 발작 중인 사람 옆에 있는 대처법으로 잘못된 것은?", opts:["발작 중인 환자를 붙잡거나 발작을 막으려고 환자를 붙잡아서는 안 되며, 다만 환자의 부상만 예방한다는 것. 그러기 위해서는 부드러운 물건을 환자의 머리와 어깨에 밑에 넣어주고 주위의 물건들을 치운다","즉시 입에 물건을 넣는다","발작 중인 환자를 붙잡는다","물을 억지로 먹인다"], ans:0, exp:"간질 발작 대처: 발작 중인 환자를 붙잡거나 발작을 막으려는 행동은 위험하다. 부드러운 물건을 머리와 어깨에 넣고 주위 물건을 치우며, 입에는 아무것도 넣지 않는다."},
+  {q:"공연장 안전사고 예방을 위한 안전매뉴얼의 구성 요소가 아닌 것은?", opts:["출연자의 의상 색상 규정","공연장 구조","조직별 업무분장","관객 대피로"], ans:0, exp:"안전매뉴얼 구성: 공연장 구조, 조직별 업무분장, 관객 대피로, 안내원 행동요령, 비상 시 대처 방안, 훈련 시나리오, 유관기관 연락처. 출연자의 의상 색상 규정은 해당 없음."},
+  {q:"위기 상황 종료 후 관객 보상 및 보험처리에 관해 처리를 요청할 수 있는 대상은?", opts:["보험처리 등에 관하여 처리를 요청할 수 있다","경찰에게만","관객에게만","아무도"], ans:0, exp:"위기상황 종료 후 관객 보상 및 보험처리 등에 관하여 처리를 요청할 수 있다."},
+],
+};
+
+// ============================================================
+// MOCK EXAMS (각 40문항, 5단원 고르게 배분)
+// ============================================================
+
+const MOCK_PASS = {1:60, 2:65, 3:70, 4:75, 5:80};
+
+function buildMockQuestions(round) {
+  // 각 단원에서 8문항씩 = 40문항
+  const units = ['unit1','unit2','unit3','unit4','unit5'];
+  let result = [];
+  units.forEach(u => {
+    const pool = [...QUESTIONS[u]];
+    // 회차별로 다른 문제 선택 (seed 기반 오프셋)
+    const offset = (round - 1) * 6;
+    for (let i = 0; i < 8; i++) {
+      result.push({...pool[(offset + i) % pool.length], unit: u});
+    }
+  });
+  return result;
+}
+
+// ============================================================
+// QUIZ ENGINE
+// ============================================================
+
+let currentQuiz = {
+  questions: [],
+  index: 0,
+  answers: [],
+  unitId: '',
+  isMock: false,
+  mockRound: 0,
+  passScore: 60,
+};
+
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  const map = {home:0,unit1:1,unit2:2,unit3:3,unit4:4,unit5:5,mock:6,summary:7,schedule:8};
+  const idx = map[id];
+  if (idx !== undefined) document.querySelectorAll('.nav-btn')[idx]?.classList.add('active');
+
+  // 특별 초기화
+  if (id === 'summary') showSummary(1, document.querySelector('.toc-btn'));
+  if (id === 'schedule') renderSchedule();
+
+  // 단원 퀴즈 자동 시작
+  const unitMap = {unit1:'unit1',unit2:'unit2',unit3:'unit3',unit4:'unit4',unit5:'unit5'};
+  if (unitMap[id]) startUnitQuiz(unitMap[id], id);
+}
+
+function startUnitQuiz(unitId, sectionId) {
+  const unitNames = {
+    unit1: 'Ⅰ. 공연예술의 이해',
+    unit2: 'Ⅱ. 극장경영론',
+    unit3: 'Ⅲ. 하우스매니저 실무 1',
+    unit4: 'Ⅳ. 고객서비스 실무 1',
+    unit5: 'Ⅴ. 고객 안전 및 위기관리론',
+  };
+  currentQuiz = {
+    questions: [...QUESTIONS[unitId]],
+    index: 0,
+    answers: new Array(QUESTIONS[unitId].length).fill(-1),
+    unitId,
+    isMock: false,
+    mockRound: 0,
+    passScore: 60,
+    title: unitNames[unitId],
+    containerId: 'quiz-' + unitId,
+  };
+  renderQuestion();
+}
+
+function startMock(round) {
+  showSection('mock');
+  const qs = buildMockQuestions(round);
+  currentQuiz = {
+    questions: qs,
+    index: 0,
+    answers: new Array(qs.length).fill(-1),
+    unitId: 'mock',
+    isMock: true,
+    mockRound: round,
+    passScore: MOCK_PASS[round],
+    title: `모의고사 ${round}회차 (합격선 ${MOCK_PASS[round]}점)`,
+    containerId: 'quiz-mock',
+  };
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const cq = currentQuiz;
+  const q = cq.questions[cq.index];
+  const container = document.getElementById(cq.containerId);
+  const pct = ((cq.index + 1) / cq.questions.length * 100).toFixed(0);
+
+  container.innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="showSection('home')">← 홈</button>
+      <div class="quiz-title">${cq.title}</div>
+      <div class="quiz-progress-text">${cq.index + 1} / ${cq.questions.length}</div>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+    <div class="question-card">
+      <div class="question-meta">Q${cq.index + 1} ${cq.isMock ? '· 모의고사' : ''}</div>
+      <div class="question-text">${q.q}</div>
+      <ul class="options-list" id="opts">
+        ${q.opts.map((o,i) => `
+          <li class="option-item" id="opt-${i}" onclick="selectAnswer(${i})">
+            <div class="option-num">${i+1}</div>
+            <span>${o}</span>
+          </li>`).join('')}
+      </ul>
+      <div class="explanation-box" id="exp-box">
+        <strong>✓ 해설:</strong> ${q.exp}
+      </div>
+    </div>
+    <div class="quiz-actions">
+      <button class="btn btn-secondary" onclick="prevQ()" ${cq.index === 0 ? 'disabled' : ''}>이전</button>
+      <button class="btn btn-primary" id="btn-check" onclick="checkAnswer()">정답 확인</button>
+    </div>
+  `;
+
+  // 이미 답한 경우 복원
+  if (cq.answers[cq.index] !== -1) {
+    showAnswerState(cq.answers[cq.index]);
+  }
+}
+
+function selectAnswer(idx) {
+  if (currentQuiz.answers[currentQuiz.index] !== -1) return; // 이미 답함
+  document.querySelectorAll('.option-item').forEach(el => el.classList.remove('selected'));
+  document.getElementById('opt-' + idx)?.classList.add('selected');
+  currentQuiz._selected = idx;
+}
+
+function checkAnswer() {
+  const cq = currentQuiz;
+  if (cq.answers[cq.index] !== -1) {
+    // 이미 확인된 경우 다음으로
+    nextQ();
+    return;
+  }
+  const selected = cq._selected;
+  if (selected === undefined) {
+    alert('답을 선택해주세요.');
+    return;
+  }
+  cq.answers[cq.index] = selected;
+  showAnswerState(selected);
+
+  const btn = document.getElementById('btn-check');
+  if (btn) {
+    if (cq.index < cq.questions.length - 1) {
+      btn.textContent = '다음 문제 →';
+    } else {
+      btn.textContent = '결과 보기';
+    }
+  }
+}
+
+function showAnswerState(selected) {
+  const cq = currentQuiz;
+  const correct = cq.questions[cq.index].ans;
+  document.querySelectorAll('.option-item').forEach((el, i) => {
+    el.classList.add('disabled');
+    if (i === correct) el.classList.add('correct');
+    if (i === selected && selected !== correct) el.classList.add('wrong');
+    if (i === selected) el.classList.add('selected');
+  });
+  document.getElementById('exp-box')?.classList.add('show');
+}
+
+function nextQ() {
+  const cq = currentQuiz;
+  if (cq.answers[cq.index] === -1) {
+    alert('정답을 먼저 확인해주세요.');
+    return;
+  }
+  if (cq.index < cq.questions.length - 1) {
+    cq.index++;
+    cq._selected = undefined;
+    renderQuestion();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (currentQuiz.index > 0) {
+    currentQuiz.index--;
+    currentQuiz._selected = undefined;
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  const cq = currentQuiz;
+  const correct = cq.answers.filter((a, i) => a === cq.questions[i].ans).length;
+  const total = cq.questions.length;
+  const score = Math.round(correct / total * 100);
+  const passed = score >= cq.passScore;
+
+  let wrongItems = '';
+  cq.questions.forEach((q, i) => {
+    if (cq.answers[i] !== q.ans) {
+      wrongItems += `
+        <div class="review-item">
+          <div class="r-q">Q${i+1}. ${q.q}</div>
+          <div class="r-your">내 답: ${cq.answers[i] >= 0 ? (cq.answers[i]+1)+'번 '+q.opts[cq.answers[i]] : '미응답'}</div>
+          <div class="r-correct">정답: ${q.ans+1}번 ${q.opts[q.ans]}</div>
+        </div>`;
+    }
+  });
+
+  const container = document.getElementById(cq.containerId);
+  container.innerHTML = `
+    <div class="quiz-header">
+      <button class="quiz-back" onclick="showSection('home')">← 홈</button>
+      <div class="quiz-title">${cq.title} — 결과</div>
+    </div>
+    <div class="result-card">
+      <div class="result-score">${score}<span>점</span></div>
+      <div class="result-pass ${passed ? 'pass' : 'fail'}">${passed ? '🎉 합격!' : '😓 불합격'}</div>
+      <div style="font-size:12px;color:var(--text2);">합격선 ${cq.passScore}점</div>
+      <div class="result-detail">
+        <div class="result-detail-item"><div class="d-num correct-num">${correct}</div><div class="d-label">정답</div></div>
+        <div class="result-detail-item"><div class="d-num wrong-num">${total - correct}</div><div class="d-label">오답</div></div>
+        <div class="result-detail-item"><div class="d-num">${total}</div><div class="d-label">총 문항</div></div>
+      </div>
+    </div>
+    ${wrongItems ? `<p style="font-size:13px;color:var(--text2);margin-bottom:12px;font-weight:700;">📋 오답 노트</p>` : '<p style="color:var(--correct);font-weight:700;">🎯 모든 문제를 맞혔습니다!</p>'}
+    <div class="review-list">${wrongItems}</div>
+    <div class="quiz-actions" style="margin-top:20px;">
+      <button class="btn btn-secondary" onclick="restartQuiz()">다시 풀기</button>
+      <button class="btn btn-primary" onclick="showSection('home')">홈으로</button>
+    </div>
+  `;
+}
+
+function restartQuiz() {
+  const cq = currentQuiz;
+  cq.index = 0;
+  cq.answers = new Array(cq.questions.length).fill(-1);
+  cq._selected = undefined;
+  renderQuestion();
+}
+
+// ============================================================
+// SUMMARY DATA
+// ============================================================
+
+const SUMMARY_DATA = {
+1: `<h2>Ⅰ. 공연예술의 이해 — 핵심 요약</h2>
+
+<h3>1. 공연예술의 개념과 특성</h3>
+<p>공연예술이란 무대 위에서 청중이나 관객을 위해 행해지는 예술행위. 음악, 무용, 발레, 오페라, 연극 등 모든 형태의 예술이다.</p>
+<div class="key-box"><strong>공연예술의 5가지 특성:</strong> 현장성 / 시간과 공간의 제약성 / 소멸성 / 복제 불가능성 / 일회성</div>
+
+<h3>2. 연극</h3>
+<h4>본질적 요소 4가지</h4>
+<div class="key-box"><strong>배우 · 무대 · 관객 · 희곡</strong></div>
+<h4>연극의 6가지 특성</h4>
+<ul>
+  <li>현장성 (시·공간적 동질성)</li>
+  <li>이중적 특성 (허구성)</li>
+  <li>배우와 관객의 역할</li>
+  <li>특수한 기호·언어</li>
+  <li>이질적인 연극 기호들의 의미공유</li>
+  <li>집단적 창조예술</li>
+</ul>
+<h4>연극의 기능</h4>
+<ul><li>종교적 / 오락적(핵심) / 교육적 / 사회적 / 심리적 / 의료적 기능</li></ul>
+<div class="key-box"><strong>카타르시스(Catharsis):</strong> 정화(purgation) — 아리스토텔레스 『시학』 6장</div>
+
+<h3>3. 무용</h3>
+<p>시간과 공간 속에 존재하는 육체의 율동적인 예술활동. <span class="tag">리듬(rhythm)</span>이 핵심.</p>
+<ul>
+  <li><strong>발레</strong> — 이탈리아어 'ballare(춤을 추다)'에서 유래. 클래식발레·모던발레로 구분</li>
+  <li><strong>현대무용(모던댄스)</strong> — 16세기 이래 발레의 인습·격식을 벗어난 무용</li>
+  <li><strong>포스트모던 무용</strong> — 1950년대부터 발레·현대무용 비판에서 탄생</li>
+</ul>
+
+<h3>4. 오페라</h3>
+<div class="key-box"><strong>발생:</strong> 1597년, 이탈리아 피렌체, 르네상스 말기<br><strong>정의:</strong> 음악을 중심으로 한 종합무대예술 (모든 대사가 노래로 표현)</div>
+<ul>
+  <li>독창자·합창·관현악으로 구성</li>
+  <li>아리아(클라이맥스 이중창), 커튼콜(중요 멜로디·아리아·합창곡 재연)</li>
+  <li>세계 유명 오페라하우스: 런던 로열오페라하우스, 마린스키 극장, 모스크바 볼쇼이, 파리 가르니에 극장</li>
+</ul>
+
+<h3>5. 뮤지컬</h3>
+<div class="key-box"><strong>발생:</strong> 19세기 미국 / <strong>뿌리:</strong> 유럽 대중연극, 오페라, 오페레타<br><strong>한국 산업화 계기:</strong> 2001년 LG아트센터 《오페라의 유령》 — 전체 박스 규모의 94% 가까운 매진</div>
+
+<h3>6. 클래식</h3>
+<ul>
+  <li><strong>고전파음악:</strong> 18세기 중엽~19세기 초 / 하이든·모차르트·베토벤</li>
+  <li><strong>낭만파음악:</strong> 19세기 / 개인주의·주관주의·국민주의</li>
+</ul>
+
+<h3>7. 국악 및 전통예술</h3>
+<div class="key-box"><strong>판소리:</strong> 연창자(소리꾼)+고수(장구) / 창·아니리·발림·추임새 / 2003년 유네스코 세계무형유산</div>
+<div class="key-box"><strong>사물놀이:</strong> 꽹과리·징·장구·북 / 1978년 최초 창단</div>
+
+<h3>8. 주요 공연 용어</h3>
+<ul>
+  <li><strong>커버(Cover):</strong> 대역의 개념. 메인 배우 불출연 시 대체</li>
+  <li><strong>언더스터디:</strong> 자신의 특정 배역이 있지만 메인 배우 대체</li>
+  <li><strong>스탠바이:</strong> 한 배역만 커버하는 언더스터디</li>
+  <li><strong>드레스리허설:</strong> 의상·분장·소도구 갖춘 실제 공연과 동일한 마지막 무대연습</li>
+  <li><strong>드라이리허설:</strong> 화장하지 않은 상태에서 소도구도 배치하지 않은 연습</li>
+</ul>`,
+
+2: `<h2>Ⅱ. 극장경영론 — 핵심 요약</h2>
+
+<h3>1. 극장의 정의와 법적 기준</h3>
+<div class="key-box"><strong>극장(劇場, Theatre):</strong> 음악·연극·무용 등의 공연을 주된 목적으로 무대와 객석을 설치하여 운영하는 시설<br>
+<strong>공연법:</strong> 연 90일 이상 또는 계속 30일 이상 공연에 제공할 목적 / 상품판매나 이에 부수한 공연은 제외<br>
+<strong>건축법:</strong> 300㎡ 미만 → 제2종 근린생활시설 / 300㎡ 이상 → 문화 및 집회시설</div>
+
+<h3>2. 극장의 유형</h3>
+<h4>시설규모에 따른 구분</h4>
+<div class="key-box">특대극장: 1,200석 이상 / 대극장: 800~1,200석 / 중극장: 300~800석 / 소극장: 300석 미만</div>
+<h4>무대 모양에 따른 구분</h4>
+<ul>
+  <li><strong>원형극장(Arena stage):</strong> 관객이 무대를 사방으로 둘러싸는 형태</li>
+  <li><strong>액자형극장(Proscenium stage):</strong> 사진틀처럼 무대 전면 개구부 구획. 가장 일반적·보편적</li>
+  <li><strong>돌출무대(Thrust stage):</strong> 프로시니엄+원형 장점 결합. 관객과 친밀감</li>
+  <li><strong>횡단무대(Transverse stage):</strong> 양쪽 관객이 서로 마주보는 Two-Sided 형태</li>
+  <li><strong>변형무대(Transform stage):</strong> 공간에 맞게 무대를 변형 사용</li>
+</ul>
+<h4>공연장르에 따른 구분</h4>
+<ul>
+  <li>연극극장(500석 이하) / 콘서트홀(1,500~2,200석) / 뮤지컬·다목적 극장(800~1,500석) / 오페라극장(2,000석)</li>
+</ul>
+
+<h3>3. 극장경영 유형</h3>
+<h4>운영주체에 따른 경영</h4>
+<ul>
+  <li><strong>공공극장:</strong> 국가·지방자치단체가 설립·운영</li>
+  <li><strong>민간극장:</strong> 건축주체와 운영주체가 같은 이윤 추구를 사회적 책임으로 강조</li>
+</ul>
+<div class="key-box">운영조직별 특성: 직접운영 / 공단운영 / 재단법인 / 민간위탁 — 각각 장단점 차이</div>
+
+<h3>4. 극장 공간 구조</h3>
+<h4>관객 공간(FOH: Front Of House)</h4>
+<ul>
+  <li>객석(Auditorium) / 로비(Foyer) / 매표소(Box Office) / 물품보관소 / Catering Service / 귀빈실(VIP Room) / 안내소</li>
+</ul>
+<h4>무대 공간(Stage)</h4>
+<ul>
+  <li>Stage Door / 무대 / 조명실 / 음향실 / 무대기계실 / 오케스트라 피트 / 분장실 / 출연자대기실(Green Room) / 연습실 / 무대장치실(Scene shop)</li>
+</ul>
+
+<h3>5. 주요 무대 용어</h3>
+<div class="key-box">
+<strong>로프트(Loft):</strong> 극장 지붕과 그리드 사이의 공간 (무대 천장공간)<br>
+<strong>겉무대(Side Stage/Wings):</strong> 주무대와 측무대 사이 공간 (약 2m 정도 너비)<br>
+<strong>그리드(Grid):</strong> 무대 천장 바닥을 구성하는 격자형 강재. 국내 구조적 안전을 위해 40이상 높이 요구<br>
+<strong>팔로우 스포트라이트:</strong> 움직이는 공연자·이동 물체에 조명을 주기 위해 수동 작동하는 조명<br>
+<strong>회전무대:</strong> 프로시니엄 폭의 0.8배 이상. 장면 전환 가능<br>
+<strong>블랙박스:</strong> 객석이나 무대 형태를 공연에 따라 바꿀 수 있는 가변형 무대<br>
+<strong>오케스트라 피트:</strong> 무대와 객석 사이, 앞무대 앞 아래쪽 관현악 연주 공간<br>
+<strong>F.O.H.:</strong> Front Of House의 약자, 객석의 전반적인 영역<br>
+<strong>무대감독(Stage Manager, RSM):</strong> 최종 리허설 후 공연을 넘겨 받아 무대에 올리는 책임자
+</div>
+
+<h3>6. 한국 극장 역사</h3>
+<ul>
+  <li><strong>1902년:</strong> 최초 국립극장 협률사 설립 (서울 종로구 인사동)</li>
+  <li><strong>1908년:</strong> 원각사 (한국 신국운동의 요람)</li>
+  <li><strong>1935년:</strong> 동양극장 (국내 유일의 연극전문극장)</li>
+  <li><strong>1976년:</strong> 동양극장 페관. 1995년 철거</li>
+</ul>
+
+<h3>7. 세계 유명 극장</h3>
+<div class="key-box">
+<strong>올림피코 극장(비첸체):</strong> 세계에서 가장 오래된 르네상스 극장<br>
+<strong>로열오페라하우스(런던):</strong> 1858년 개관, 2,268석<br>
+<strong>마린스키 극장(페테르부르크):</strong> 1860년 개관<br>
+<strong>볼쇼이 극장(모스크바):</strong> 1825년 1월 18일 재개관<br>
+<strong>가르니에 극장(파리):</strong> 1875년 개관, 2,200석
+</div>`,
+
+3: `<h2>Ⅲ. 하우스매니저 실무 1 — 핵심 요약</h2>
+
+<h3>1. 하우스매니저란?</h3>
+<div class="key-box">공연장 운영을 위한 관객의 안전·서비스 관리 및 인력운영, 객석·로비 관리를 담당하는 사람. 극장의 시설물을 관리하고 보완하는 극장관리자임과 동시에 고객의 안전을 담당하는 안전관리자이기도 하다.</div>
+
+<h3>2. 하우스매니지먼트</h3>
+<ul>
+  <li>공연장을 관리하고 운영하는 것</li>
+  <li>공연장의 목적을 달성하기 위해 영위하는 활동을 계획하고, 통제하여 이를 작업하고 관리하는 총제적인 일</li>
+</ul>
+
+<h3>3. 하우스매니저 업무 구분</h3>
+<h4>공연장 안전 관리</h4>
+<ul>
+  <li>안전시설 점검 (비상구, AED, 소화기, 비상대피로)</li>
+  <li>사고 발생요인 파악</li>
+  <li>관객 대피 동선 점검</li>
+  <li>위기 상황 훈련</li>
+  <li>위기 상황 시 대처</li>
+</ul>
+<h4>하우스 공연 진행</h4>
+<ul>
+  <li>서비스 인력 근무배치</li>
+  <li>공연 장르별 진행 요령</li>
+  <li>공연진행 관련 정보전달</li>
+  <li>특이사항 조율</li>
+  <li>입·퇴장 관리</li>
+  <li>유보석 관리</li>
+  <li>관객 에티켓 관리</li>
+</ul>
+
+<h3>4. 공연 장르별 진행 요령</h3>
+<div class="key-box">
+<strong>클래식:</strong> 연주자와 협의한 입장시점(이닝)에만 지연관객 입장 허용<br>
+<strong>재즈·월드음악:</strong> 지연관객 입장 비교적 융통성 있게 허용. 공연 후 관객 돌발행동 주의<br>
+<strong>무용:</strong> 고난이도 테크닉, 음향이 거의 없는 경우 입장 주의. 발레는 작품 흐름 파악 후 입장시점 결정<br>
+<strong>연극:</strong> 음향 크거나 조명 밝아지는 무전시점에 입장<br>
+<strong>뮤지컬·오페라:</strong> 서곡(Intro)이 끝나면 객석입장 통제. 막과 장의 구분 파악<br>
+<strong>대중가요·팝 콘서트:</strong> 큐시트 기준으로 입장시점 정함
+</div>
+
+<h3>5. 유보석</h3>
+<div class="key-box">관객 불만사항 발생 시 좌석 교환을 위해 사전에 확보해 둔 좌석</div>
+
+<h3>6. 공연장 서비스 인력관리</h3>
+<ul>
+  <li>인력 채용 (근로기준법 준수)</li>
+  <li>교육 (기본교육, 장애인 응대교육, 안전교육)</li>
+  <li>근무일정 관리</li>
+  <li>복장·용모 관리</li>
+  <li>복리후생 관리</li>
+</ul>
+<div class="key-box"><strong>하우스 운영 예산:</strong> 서비스 인력 인건비·복리후생비, 무전기·유니폼·랜턴·구급약품·소모품, 비상약품·여성용품, 옷장·접이식 의자 등 운영관련 비용</div>
+
+<h3>7. 공연장 매뉴얼 관리</h3>
+<ul>
+  <li><strong>안전 매뉴얼:</strong> 공연법 제11조 기준 / 공연장 구조·조직별 업무분장·관객 대피로·행동요령·훈련 시나리오</li>
+  <li><strong>서비스 매뉴얼:</strong> 공연장 이해·관객응대 요령·특수관객 응대요령·의전</li>
+  <li><strong>교육 매뉴얼:</strong> 서비스 마인드·복장·용모·근무수칙·공연장 소개·규정</li>
+  <li><strong>관람예절 안내문:</strong> 휴대폰 전원차단·음식물 반입금지·사진촬영·녹음금지·장르별 관람법</li>
+</ul>
+
+<h3>8. 컴플레인 vs 클레임</h3>
+<div class="key-box">
+<strong>클레임(Claim):</strong> 객관적 관점에서 보상·배상을 요구하는 것<br>
+<strong>컴플레인(Complain):</strong> 주관적 관점에서 불평불만 제기, 개선을 요구하는 것
+</div>
+
+<h3>9. 컴플레인 응대 6원칙</h3>
+<ul>
+  <li>미리 준비해라</li>
+  <li>원칙을 고수하되 효율성을 고려하라 (예외사항 고려)</li>
+  <li>관객의 입장에서 생각하라</li>
+  <li>설명하고 설득하라</li>
+  <li>대안책을 제시하라</li>
+  <li>자세와 태도를 최우선으로 하라</li>
+</ul>
+
+<h3>10. 리허설 종류</h3>
+<ul>
+  <li>테크니컬(무대기술) 리허설</li>
+  <li>프레스(기자초청) 리허설</li>
+  <li>드레스(의상) 리허설 — 최종 리허설</li>
+  <li>런스루(최종공연) 리허설</li>
+</ul>`,
+
+4: `<h2>Ⅳ. 고객서비스 실무 1 — 핵심 요약</h2>
+
+<h3>1. 고객의 정의</h3>
+<div class="key-box">고객은 단순한 손님이 아니라 주인이다. 고객은 귀찮은 사람이 아니라 이용의 주체이며 공연장이 존재하는 그 목적 자체인 것이다.</div>
+<ul>
+  <li>내부고객: 직장에서 함께 근무하는 직원 등</li>
+  <li>외부고객: 유관기관, 거래처, 이용자(소비자)</li>
+</ul>
+
+<h3>2. 서비스의 개념과 특성</h3>
+<div class="key-box">서비스(Service) 어원: 라틴어 'servus'(노예) — 봉사, 최선을 다함, 돌봄</div>
+<h4>서비스의 4가지 특성</h4>
+<ul>
+  <li><strong>무형성:</strong> 보거나 만질 수 없어 경험 전 품질 판단 어려움</li>
+  <li><strong>동시성:</strong> 제공 즉시 생산되고 또한 소멸됨</li>
+  <li><strong>이질성:</strong> 환경이나 사람에 따라 서비스 품질이 달라짐</li>
+  <li><strong>소멸성:</strong> 제공되지 않은 서비스는 재고로 관리하기 어려움</li>
+</ul>
+
+<h3>3. 서비스 접점 (MOT: Moments Of Truth)</h3>
+<div class="key-box">얀 칼슨(Jan Carlzon)이 정의한 '진실의 순간' — 고객에게 서비스를 제공하는 순간</div>
+<h4>접점의 3가지 요소</h4>
+<ul>
+  <li>사람(People) — 가장 많은 영향을 주는 것</li>
+  <li>절차(Process)</li>
+  <li>물리적 증거(Physical Evidence)</li>
+</ul>
+
+<h3>4. 서비스인이 갖추어야 할 능력</h3>
+<ul>
+  <li>고객에게 신뢰를 주어야 한다</li>
+  <li>커뮤니케이션 능력이 있어야 한다</li>
+  <li>판단력과 창의력이 있어야 한다</li>
+</ul>
+<div class="key-box"><strong>친절 서비스 3S:</strong> Smile / Speed / Sincerity<br>
+<strong>5S:</strong> Stand / See / Smile / Speed / Satisfaction</div>
+
+<h3>5. 이미지메이킹</h3>
+<div class="key-box">
+<strong>기본 요소:</strong> 온화하고 친절한 표정 / 바르고 절도 있는 자세 / 따뜻하게 먼저 건네는 인사 / 단정하고 깔끔한 용모 / 부드럽고 상냥한 말씨
+</div>
+<h4>표정</h4>
+<ul><li>가장 호감이 가는 표정은 스마일이다</li><li>웃음은 에어로빅 5분 효과</li></ul>
+<h4>인사 각도</h4>
+<ul>
+  <li>15도 — 반가움 / 32도 — 일반적 / 45도 — 감사·사과</li>
+</ul>
+<h4>방향·지시 동작</h4>
+<ul>
+  <li>손가락을 모으고 손바닥 전체를 펴서 방향을 가리킨다</li>
+  <li>오른쪽을 가리킬 때는 오른손을, 왼쪽은 왼손을 사용</li>
+</ul>
+<h4>서기 자세</h4>
+<ul>
+  <li>남자: 양발의 각도는 45°(10시 10분), 여자는 30°(11시 5분)</li>
+  <li>여자: 오른손이 위로 오게 하여 공수법(攻手法)을 사용</li>
+</ul>
+
+<h3>6. 고객만족을 위한 주의사항</h3>
+<ul>
+  <li>고객의 이야기를 적극적으로 들어라</li>
+  <li>고객에게 인간적이고 열성적인 태도를 보여라</li>
+  <li>고객서비스는 타이밍이다</li>
+  <li>서비스인은 문화예술을 사랑하고 아껴야 한다</li>
+  <li>조직의 리더일수록 솔선수범하라</li>
+</ul>
+
+<h3>7. 고객의 불만요소</h3>
+<h4>기관이나 시설이 가진 요소</h4>
+<ul><li>사업방향이나 구조 / 프로세스·프로그램 / 기술 및 지원시스템 / 기준이나 가치 / 내부적인 커뮤니케이션</li></ul>
+<h4>직원에 관한 요소</h4>
+<ul><li>군림하는 서비스 태도 / 지식·정보제공 능력 / 커뮤니케이션 능력</li></ul>
+
+<h3>8. 불만고객 유형별 응대법</h3>
+<div class="key-box">
+화가 난 고객 — 일단 사과, 충분히 들어주고 가능한 일 제시<br>
+신경질적인 고객 — 자극하지 말고 신속히 고객 요구 조치<br>
+무리한/거만한 고객 — 전문가답게 확고하고 공정한 태도 유지<br>
+까다로운 고객 — 정중·친절하게 응대, 잘못 지적 시 진심으로 받아들임<br>
+무례하거나 경솔한 고객 — 침착·단호하게, 자존심 짓밟지 않도록 주의
+</div>
+
+<h3>9. 서비스 매뉴얼 구성</h3>
+<ul>
+  <li>공연장의 이해, 관객응대 요령, 특수관객 응대요령, 의전</li>
+</ul>
+<h4>교육 매뉴얼 포함 내용</h4>
+<ul>
+  <li>서비스 마인드, 복장, 용모, 근무수칙, 공연장 소개, 공연장 규정, 공연 및 공연 장르에 대한 이해</li>
+</ul>`,
+
+5: `<h2>Ⅴ. 고객 안전 및 위기관리론 — 핵심 요약</h2>
+
+<h3>1. 공연장 안전의 중요성</h3>
+<ul>
+  <li>공연장은 불특정 다수가 이용하는 공공시설로 안전에 의무와 책임이 있음</li>
+  <li>관람객의 사고발생 시 인명피해가 크다</li>
+  <li>공연장의 안전은 그 나라의 문화수준을 나타내고 이미지 형성에 큰 영향을 줌</li>
+  <li>피해를 입을 경우 개보수 비용이 많이 든다</li>
+</ul>
+
+<h3>2. 공연장 안전을 위한 기본조건</h3>
+<ul>
+  <li>공연장 기본시설은 안전을 고려하여 설계·시공되어야 함</li>
+  <li>모든 기기는 주의 깊게 조작하고 수시로 점검</li>
+  <li>안전사고를 유발할 수 있는 요소를 미연에 방지</li>
+  <li>안전매뉴얼 개발·훈련을 전 직원이 수시로 실시</li>
+</ul>
+
+<h3>3. 공연장 위기상황의 유형</h3>
+<ul>
+  <li>작업장 폭력 (직장 내 동료에 대한 살인 또는 상해)</li>
+  <li>루머 (조직 또는 제품에 관한 거짓 정보가 유포)</li>
+  <li>초대권 남발 등의 매표사고</li>
+  <li>공연시작 지연사고</li>
+  <li>공연의 취소나 중단사고</li>
+</ul>
+
+<h3>4. 위기상황 TIP</h3>
+<h4>매표사고</h4>
+<ul>
+  <li>티켓 검표 시 극장 객석 수에 맞는 양의 티켓만을 검인</li>
+  <li>손해 배상 방법을 미리 강구</li>
+  <li>객석 입석 무리하게 요구 금지</li>
+</ul>
+<h4>공연시작 지연</h4>
+<ul>
+  <li>10분 정도 늦어지면 관객에게 사정 알리기</li>
+  <li>즉흥 안내멘트는 하우스매니저가 할 수 있어야 함</li>
+</ul>
+
+<h3>5. 화재 대응</h3>
+<div class="key-box">
+<strong>기본 원칙:</strong><br>
+1. 시설 내를 순회해서 조기발견과 초기소화에 노력<br>
+2. 연기에 의한 피해로부터 몸을 지킨다 (손수건으로 코와 입 막기)<br>
+3. 화재 경보 벨이 울렸을 때 관객에게 바로 설명하고 지시<br>
+4. 피난동선을 미리 확인해 둔다<br>
+5. 초기소화는 2명 이상이서 한다
+</div>
+<h4>화재 단계별 대응</h4>
+<ul>
+  <li>A1: 발견자 → 큰소리로 '불이야' / 내선전화로 위기관리팀장에게 연락</li>
+  <li>A2: 화재발생 가까이 있는 사람이 초기소화 (동시에 119 신고)</li>
+  <li>B1: 극장 안에서 화재 → 관객에게 알리는 동시에 조명 밝게</li>
+  <li>D1: 초기 소화 성공 → 사태 수습 관객에게 방송, 공연 중지/계속 협의</li>
+</ul>
+
+<h3>6. 위기관리의 포인트</h3>
+<div class="key-box">
+<strong>화재 위기관리:</strong><br>
+① 시설 내를 순회해서 조기발견과 초기소화에 노력<br>
+② 연기에 의한 피해로부터 몸을 지킨다<br>
+③ 화재 경보 벨이 울렸을 때 직원은 관객에게 바로 설명하고 지시<br>
+④ 피난동선을 미리 확인해 둔다
+</div>
+
+<h3>7. 응급처치</h3>
+<h4>졸도(기절)</h4>
+<ul>
+  <li>환자의 머리와 몸을 수평으로 눕히고 다리를 높여주고 옷을 느슨하게 → 뇌로 피가 잘 흐르도록</li>
+</ul>
+<h4>인사불성(의식불명)</h4>
+<ul><li>빠르게 응급의료서비스기관에 도움 청하기</li></ul>
+<h4>뇌출혈</h4>
+<ul><li>한쪽 눈동자가 다른 쪽보다 크고 입이 한쪽으로 쏠리는 증상. 안정 → 빠른 응급 연락</li></ul>
+<h4>심장마비</h4>
+<ul><li>의식이 있어도 갑자기 죽는 경우. 절대 안정 → 빠른 응급 연락</li></ul>
+<h4>간질(뇌전증) 발작</h4>
+<ul><li>환자를 붙잡거나 발작 막으려 하면 안 됨. 부드러운 물건을 머리·어깨 밑에 넣고 주위 물건 치우기</li></ul>
+<h4>딸꾹질</h4>
+<ul><li>혀를 1~2분 동안 앞으로 빼내고 냉수를 조금씩 천천히 마시기</li></ul>
+
+<h3>8. 군중심리</h3>
+<ul>
+  <li>군중이 모이면 개인 억제력이 감소한다</li>
+  <li>충동적·흥분적으로 행동하기 쉽다</li>
+  <li>암시에 걸리기 쉽다</li>
+  <li>책임감이 분산된다</li>
+</ul>
+
+<h3>9. 감염증 대응</h3>
+<div class="key-box">
+<strong>메르스(MERS):</strong> 2015년 5월 첫 감염자 / 186명 환자 / 38명 사망 / 2015.12.23 종식 선언<br>
+<strong>코로나19:</strong> 2020년 1월 20일 국내 첫 확진자 / WHO 팬데믹 선포
+</div>
+<h4>감염증 유행 시 공연장 대응</h4>
+<ul>
+  <li>연락망 확보 → 격리소 선정 → 예방수칙 안내 부착 및 방역 → 의심환자 발생 시 매뉴얼 제작</li>
+  <li>손 씻기·기침에절 교육·홍보, 발열체크, 마스크 착용 의무화, 거리두기 좌석제</li>
+</ul>`
+};
+
+function showSummary(num, btn) {
+  document.querySelectorAll('.toc-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  document.getElementById('summary-body').innerHTML = SUMMARY_DATA[num];
+}
+
+// ============================================================
+// SCHEDULE
+// ============================================================
+
+function renderSchedule() {
+  const weeks = [
+    {w:'1주차', theme:'오리엔테이션 + 공연예술 이해', days:[
+      {d:'월', c:'오리엔테이션 / 교재·앱 소개 / 공연예술이란? (1~1.5h)', n:'이론'},
+      {d:'화', c:'연극의 정의·요소·특성·기능', n:'이론'},
+      {d:'수', c:'무용·발레·현대무용 / 현장 배치 관찰', n:'이론+현장'},
+      {d:'목', c:'오페라·뮤지컬 장르 특성', n:'이론'},
+      {d:'금', c:'Ⅰ단원 예상문제 30문항 풀이 + 오답 정리', n:'평가'},
+    ]},
+    {w:'2주차', theme:'클래식·국악·공연용어', days:[
+      {d:'월', c:'클래식(고전파·낭만파) 장르 이해', n:'이론'},
+      {d:'화', c:'국악·판소리·사물놀이·기타 장르', n:'이론'},
+      {d:'수', c:'공연예술 용어·상식 (부록) 정리', n:'이론+현장'},
+      {d:'목', c:'Ⅰ단원 복습 + 국악 공연 관람예절 실습', n:'복습'},
+      {d:'금', c:'Ⅰ단원 총정리 문제 풀이 / 개인 피드백', n:'평가'},
+    ]},
+    {w:'3주차', theme:'극장경영론 — 극장의 이해', days:[
+      {d:'월', c:'극장의 정의·법적 기준·시설규모 구분', n:'이론'},
+      {d:'화', c:'무대 모양에 따른 극장 유형 (원형·액자형·돌출·횡단·변형)', n:'이론'},
+      {d:'수', c:'공연 장르에 따른 극장 구분 / 실제 공간 견학', n:'이론+현장'},
+      {d:'목', c:'운영주체에 따른 경영 (공공·민간·위탁)', n:'이론'},
+      {d:'금', c:'Ⅱ단원 예상문제 30문항 풀이 + 오답 정리', n:'평가'},
+    ]},
+    {w:'4주차', theme:'극장경영론 — 경영·역사·무대용어', days:[
+      {d:'월', c:'공연물 제작방식·전속단체·기획·제작·대관', n:'이론'},
+      {d:'화', c:'극장의 역사 (한국·세계 유명 극장)', n:'이론'},
+      {d:'수', c:'극장 공간 구조 (FOH·무대공간) / 실습', n:'이론+현장'},
+      {d:'목', c:'무대용어 상식 (부록) 총정리', n:'이론'},
+      {d:'금', c:'Ⅱ단원 총정리 / 1·2단원 통합 복습', n:'평가'},
+    ]},
+    {w:'5주차', theme:'하우스매니저 실무 — 안전·진행', days:[
+      {d:'월', c:'하우스매니저란? / 공연장 안전관리 업무', n:'이론'},
+      {d:'화', c:'안전시설 점검·사고요인 파악·대피동선 / 현장 점검 실습', n:'이론+현장'},
+      {d:'수', c:'하우스 공연 진행 / 서비스 인력 근무배치', n:'이론'},
+      {d:'목', c:'공연 장르별 진행 요령 (클래식·무용·연극·뮤지컬 등)', n:'이론'},
+      {d:'금', c:'Ⅲ단원 예상문제 30문항 풀이', n:'평가'},
+    ]},
+    {w:'6주차', theme:'하우스매니저 실무 — 법률·인력·운영', days:[
+      {d:'월', c:'공연진행 정보전달·특이사항 조율·입퇴장 관리', n:'이론'},
+      {d:'화', c:'공연장 관객 서비스 개발·불만사항 관리', n:'이론'},
+      {d:'수', c:'공연장 서비스 인력관리 (채용·교육·근무일정·복장)', n:'이론'},
+      {d:'목', c:'하우스 관련 법률 (공연법·근로기준법·장애인복지법)', n:'이론'},
+      {d:'금', c:'Ⅲ단원 총정리 + 모의고사 1회차', n:'평가'},
+    ]},
+    {w:'7주차', theme:'고객서비스 실무 — 고객·서비스 이론', days:[
+      {d:'월', c:'고객의 정의·분류·기본욕구·고객만족요소', n:'이론'},
+      {d:'화', c:'서비스의 개념·특성(무형성·동시성·이질성·소멸성)', n:'이론'},
+      {d:'수', c:'서비스 접점(MOT)·서비스 단계·제공자 역할 / 현장 실습', n:'이론+현장'},
+      {d:'목', c:'고객만족 경영 (직원만족·서비스시스템·지속적 관심)', n:'이론'},
+      {d:'금', c:'Ⅳ단원 예상문제 30문항 풀이', n:'평가'},
+    ]},
+    {w:'8주차', theme:'고객서비스 실무 — 실무·이미지메이킹·불만응대', days:[
+      {d:'월', c:'서비스실무 기본·이미지메이킹 (표정·자세·인사)', n:'이론'},
+      {d:'화', c:'복장·용모·전화응대·사무실 응대 / 실습', n:'이론+현장'},
+      {d:'수', c:'고객 불만요소·유형별 응대법', n:'이론'},
+      {d:'목', c:'컴플레인 vs 클레임 / 응대 6원칙 / 온라인 불만 관리', n:'이론'},
+      {d:'금', c:'Ⅳ단원 총정리 + 모의고사 2회차', n:'평가'},
+    ]},
+    {w:'9주차', theme:'안전관리론 — 안전의 중요성·사고 유형', days:[
+      {d:'월', c:'공연장 안전의 중요성·기본조건·공연법 관련 조항', n:'이론'},
+      {d:'화', c:'공연장 안전사고 유형·사례 분석', n:'이론'},
+      {d:'수', c:'위기상황 유형 (매표사고·지연·취소·중단) / 현장 점검', n:'이론+현장'},
+      {d:'목', c:'위기상황 TIP (매표사고·지연·취소 대응)', n:'이론'},
+      {d:'금', c:'Ⅴ단원 예상문제 30문항 풀이', n:'평가'},
+    ]},
+    {w:'10주차', theme:'안전관리론 — 화재·군중·응급처치', days:[
+      {d:'월', c:'안전사고 예방을 위한 프로세스', n:'이론'},
+      {d:'화', c:'화재 예방·대응 / 위기관리 포인트', n:'이론'},
+      {d:'수', c:'군중심리·안전훈련법 / 대피 훈련 실습', n:'이론+현장'},
+      {d:'목', c:'응급처치 (졸도·심장마비·뇌출혈·간질·어린이 경련 등)', n:'이론'},
+      {d:'금', c:'Ⅴ단원 총정리 + 모의고사 3회차', n:'평가'},
+    ]},
+    {w:'11주차', theme:'종합 복습 + 실무 심화', days:[
+      {d:'월', c:'1·2단원 종합 복습 (오답 중심)', n:'복습'},
+      {d:'화', c:'3단원 종합 복습 / 실제 공연 진행 보조 실습', n:'복습+현장'},
+      {d:'수', c:'4단원 종합 복습 / 고객 응대 롤플레이', n:'복습+현장'},
+      {d:'목', c:'5단원 종합 복습 / 안전 훈련 재실습', n:'복습+현장'},
+      {d:'금', c:'모의고사 4회차 (난이도 상향 75점 합격선)', n:'평가'},
+    ]},
+    {w:'12주차', theme:'최종 마무리 + 실전 준비', days:[
+      {d:'월', c:'전 단원 단권화 요약본 완성 리뷰', n:'복습'},
+      {d:'화', c:'약점 단원 집중 보완 / 개인 피드백', n:'복습'},
+      {d:'수', c:'실전 공연 현장 배치 근무', n:'현장'},
+      {d:'목', c:'실전 공연 현장 배치 근무 / 총정리', n:'현장'},
+      {d:'금', c:'모의고사 5회차 (80점 합격선) + 수료식', n:'최종평가'},
+    ]},
+  ];
+
+  const container = document.getElementById('schedule-body');
+  container.innerHTML = weeks.map(w => `
+    <div class="week-card">
+      <div class="week-header">
+        <div class="w-title">${w.w}</div>
+        <div class="w-theme">${w.theme}</div>
+      </div>
+      ${w.days.map(d => `
+        <div class="day-row">
+          <div class="day-label">${d.d}요일</div>
+          <div class="day-content">${d.c}</div>
+          <div class="day-note">${d.n}</div>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+// ============================================================
+// INIT
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', () => {
+  showSummary(1, document.querySelector('.toc-btn'));
+});
+</script>
+</body>
+</html>
